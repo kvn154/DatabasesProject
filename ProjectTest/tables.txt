@@ -1,0 +1,123 @@
+/*THESE TABLES ARE ALMOST COMPLETE THEY STILL NEEED.
+- Cascade deletion as specified in our docs
+- the functions that we also specified*/ 
+
+CREATE TABLE hotel_chain(
+chain_ID int NOT NULL,
+centAddress VARCHAR(150),
+email VARCHAR(256),
+nTelephone int, /*I put 12 to adjust international size 
+calling to canada and other countriesUsing the modern global 
+format for telephone numbers, a Canadian number would be 
+written as +1NPANXXXXXX -WIKIPEDIA (Im not including the + sign)
+mind you this can be checked instead when putting a check */
+chainRating int,
+--nHotels(), Kevin will make this function
+PRIMARY KEY(chain_ID)
+);
+
+CREATE TABLE hotel(
+    hotelAddress VARCHAR(150),
+    hotel_ID int NOT NULL,
+    --nRooms(), KEVIN FUNCTION
+    nTelephone int,
+	chain_ID int,
+    hotelRating int,
+    PRIMARY KEY(hotel_ID),
+	FOREIGN KEY (chain_ID) REFERENCES hotel_chain
+);
+
+CREATE TABLE capacity(
+    size_name VARCHAR(20),
+	capacity_ID int NOT NULL,
+    PRIMARY KEY(capacity_ID)
+);
+
+CREATE TABLE views(
+    description VARCHAR(20),
+	views_ID int NOT NULL,
+    PRIMARY KEY(views_ID)
+);
+
+CREATE TABLE room(
+    price FLOAT,
+    capaCity_ID int,
+	FOREIGN KEY (capacity_ID) REFERENCES capacity,
+    extra_bed BOOLEAN,
+    views_ID int,
+	/* Here THE REFERENCES IS GOING TO BE TO VIEWS 
+	ID A NUMBER WHICH IN THE TABLE VIEWS MATCHES
+	WITH A DESCRIPTION*/
+	FOREIGN KEY(views_ID) REFERENCES views,
+	hotel_ID int NOT NULL,
+	FOREIGN KEY(hotel_ID) REFERENCES hotel,
+    --available (),;KEVIN FUNCTIUOBN
+    rNumber INT NOT NULL,
+    PRIMARY KEY (rNumber,hotel_ID)
+);
+
+CREATE TABLE client(
+    FirstName   VARCHAR(50) NOT NULL,
+    MiddleName  VARCHAR(50),
+    LastName   VARCHAR(50) NOT NULL,
+    cAddress VARCHAR(150),
+    SSN_client int NOT NULL,
+    PRIMARY KEY (SSN_client)
+);
+
+CREATE TABLE employee(
+    FirstName         VARCHAR(50) NOT NULL,
+    MiddleName    VARCHAR(50),
+    LastName          VARCHAR(50)NOT NULL,
+    eAddress VARCHAR(254),
+    role VARCHAR(15),
+    SSN_employee int NOT NULL,
+    PRIMARY KEY(SSN_employee)
+);
+
+CREATE TABLE reservation(
+    sTime TIMESTAMP DEFAULT NULL,
+    eTime TIMESTAMP DEFAULT NULL,
+    client_ID int,
+	FOREIGN KEY (client_ID) REFERENCES client,
+    hotel_id int,
+	FOREIGN KEY (hotel_ID) REFERENCES hotel,
+    views VARCHAR(50),
+    capacity VARCHAR(15),
+    extraBed BOOLEAN,
+    PRIMARY KEY (client_ID,hotel_ID,sTime)
+);
+
+CREATE TABLE damage(
+    damage_ID int NOT NULL,
+    rNumber int,
+	hotel_ID int,
+	FOREIGN KEY (rNumber,hotel_ID) REFERENCES room,
+	/* In the lack of a better way to connect each damage
+	to its room id which is composite I used both of the elements of
+	the composite primary key in room */
+    description VARCHAR(200),
+    PRIMARY KEY (damage_ID)
+);
+
+CREATE TABLE commodity(
+    commodity_ID int NOT NULL AUTO_INCREMENT,
+    type VARCHAR(10),
+    description CHAR(25),
+    PRIMARY KEY(commodity_ID)
+);
+
+CREATE TABLE commodity(
+    commodity_ID int NOT NULL,
+    type VARCHAR(10),
+    description CHAR(25),
+    PRIMARY KEY(commodity_ID)
+);
+
+CREATE TABLE allocation(
+    allocation_ID int NOT NULL,
+    sTime TIMESTAMP DEFAULT NULL,
+    eTime TIMESTAMP DEFAULT NULL,
+    rNumber int,
+    PRIMARY KEY(allocation_ID)
+);
