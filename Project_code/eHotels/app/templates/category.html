@@ -1,0 +1,26 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    
+    <h2>Category: {{ category }}</h2>
+    {% for list in auction_listings %}
+        {% if list.is_active %}
+            <div class="container listing" style="height: fit-content; min-height: 200px;">
+                {% if list.image_url %}
+                    <img src="{{ list.image_url }}" style="height: 190px;" class="imgl">
+                {% endif %}
+                <div onclick="location.href='{{ list.id }}';">
+                    <h3><b>{{ list.title }}</b></h3>
+                    <h6><b>Price:</b> ${{ list.starting_bid }}</h6>
+                    {% if list.category %}
+                        <h6><b>category:</b> {{ list.category }}</h6>
+                    {% endif %}
+                    <p>{{ list.description }}</p>
+                    {% if list.date %}
+                        <h style="font-size: small; color: gray;">Created {{ list.date }}</h>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

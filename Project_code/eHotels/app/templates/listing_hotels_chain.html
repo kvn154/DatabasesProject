@@ -1,0 +1,92 @@
+{% extends "app/layout.html" %}
+
+{% block body %}
+    <h2><b>Listing: {{ hotels.title }}</b></h2>
+    {% if user.is_authenticated %}
+        {% if in_watchlist %}
+        <form action="{% url 'rm_watchlist' product.id %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-secondary watchlist" value="Remove from Watchlist">
+        </form>
+        {% else %}
+        <form action="{% url 'add_to_watchlist' product.id %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-secondary watchlist" value="Watchlist">
+        </form>
+        {% endif %}
+        {% if owner.ownerid == user and product.is_active %}
+        <form action="{% url 'close_listing' product.id %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-danger watchlist" value="Close Listing">
+        </form>
+        {% endif %}
+    {% endif %}
+
+    {% if product.image_url %}
+        <img src="{{ product.image_url }}" class="center">
+    {% endif %}
+    <h6>{{ product.description }}</h6>
+    {% if Bid %}
+        <h3><b> ${{ Bid.bid }}</b></h3>
+    {% else %}
+        <h3><b> ${{ product.starting_bid }}</b></h3>
+    {% endif %}
+    {% if message %}
+        <h6 style="color: red;">{{ message }}</h6>
+    {% endif %}
+    {% if product.is_active %}
+        <a>{{ count }} bid(s) so far.</a>
+        {% if ishighest %}
+            <a>Your bid is the current bid</a>
+        {% endif %}
+        <form action="{% url 'listing_product' product.id %}" method="post">
+            {% csrf_token %}
+            {% if Bid %}
+                <input type="number" step="0.01" min="{{ Bid.bid }}" placeholder="Bid" name="bid" class="inp">
+            {% else %}
+                <input type="number" step="0.01" min="{{ product.starting_bid }}" placeholder="Bid" name="bid" class="inp">
+            {% endif %}
+            <input type="submit" value="Place Bid" class="placebid">
+        </form>
+    {% else %}
+        <h4><b>Sold!
+        {% if ishighest %}
+         You Won
+        {% endif %}
+        </b></h4>
+    {% endif %}
+    <hr>
+    <h4><b>Details</b></h4>
+    <ul>
+        <li>Listed by: {{ owner.ownerid }}</li>
+
+        {% if product.category %}
+            <li>category: {{ product.category }}</li>
+        {% else %}
+        <li>category: No Category Listed</li>
+
+        {% endif %}
+    </ul>
+    <hr>
+    {% if user.is_authenticated and product.is_active %}
+        <form action="{% url 'comment' product.id %}" method="POST" style="padding-block-end: 50px;">
+            {% csrf_token %}
+            <input type="text" name="comment" maxlength="2000" placeholder="Comment" class="inp">
+            <input type="submit" value="Send" class="placebid">
+        </form>
+        
+    {% endif %}
+    {% if comments %}
+        <h3 style="padding-block-end: 20px;"><b>Comments:</b></h3>
+        {% for comment in comments %}
+            <div>
+                <h5><b>{{ comment.user_id.username }}:</b></h5>
+                <h6 style="color: gray; font-size: small">{{ comment.date }}</h6>
+                    <div style="padding-left: 15px;">{{ comment.comment}}</div>
+                <hr>
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+        
+{% endblock %}

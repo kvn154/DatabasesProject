@@ -1,0 +1,25 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Watchlist</h2>
+    {% for list in auction_listings %}
+        <div class="container listing" style="height: fit-content; min-height: 200px;">
+            {% if list.product_id.image_url %}
+                <img src="{{ list.product_id.image_url }}" style="height: 190px;" class="imgl">
+            {% endif %}
+            <div onclick="location.href='{{ list.product_id.id }}';">
+                <h3><b>{{ list.product_id.title }}</b></h3>
+                <h6><b>Price:</b> ${{ list.product_id.starting_bid }}</h6>
+                {% if list.product_id.category %}
+                    <h6><b>category:</b> {{ list.product_id.category }}</h6>
+                {% endif %}
+                <p>{{ list.product_id.description }}</p>
+                {% if list.product_id.date %}
+                    <h style="font-size: small; color: gray;">Created {{ list.product_id.date }}</h>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+    <h5>No items</h5>
+    {% endfor %}
+{% endblock %}
