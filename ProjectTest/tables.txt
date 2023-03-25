@@ -78,9 +78,9 @@ CREATE TABLE employee(
 CREATE TABLE reservation(
     sTime TIMESTAMP DEFAULT NULL,
     eTime TIMESTAMP DEFAULT NULL,
-    client_ID int,
+    client_ID int NOT NULL,
 	FOREIGN KEY (client_ID) REFERENCES client,
-    hotel_id int,
+    hotel_ID int NOT NULL,
 	FOREIGN KEY (hotel_ID) REFERENCES hotel,
     views VARCHAR(50),
     capacity VARCHAR(15),
@@ -114,10 +114,32 @@ CREATE TABLE commodity(
     PRIMARY KEY(commodity_ID)
 );
 
-CREATE TABLE allocation(
-    allocation_ID int NOT NULL,
+/*NOTICE THAT IN LOCATION
+ S time needs to be the same
+ as in reservation (But the ennd time might change so we need to fix that) 
+ I also added hotel id here to not lose track of which specific room we are talking about*/
+SET search_path = 'SAILORS';
+CREATE TABLE location(
+    location_ID int NOT NULL,
     sTime TIMESTAMP DEFAULT NULL,
     eTime TIMESTAMP DEFAULT NULL,
-    rNumber int,
-    PRIMARY KEY(allocation_ID)
+    in_person BOOLEAN,
+    client_ID int NOT NULL,
+    hotel_ID int NOT NULL,
+    SSN_employee int NOT NULL,
+    rNumber int NOT NULL,
+    FOREIGN KEY (SSN_employee) REFERENCES employee,
+    FOREIGN KEY (client_ID,hotel_ID,sTime) REFERENCES reservation,
+    PRIMARY KEY(location_ID)
+);
+
+CREATE TABLE payment(
+    payment_ID int NOT NULL,
+    amount FLOAT,
+    method VARCHAR(25),
+    client_ID int NOT NULL,
+    FOREIGN KEY (client_ID) REFERENCES client,
+    location_ID int NOT NULL,
+    FOREIGN KEY (location_ID) REFERENCES location,
+    PRIMARY KEY(payment_ID)
 );
