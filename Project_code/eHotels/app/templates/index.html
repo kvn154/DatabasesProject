@@ -6,14 +6,14 @@
     color: orange;
 }
     </style>
-    <h2>Hotels Listings</h2>
+    <h2>Active Listings</h2>
     {% for list in hotels_listings %}
             <div class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
                 {% if list.image_url %}
                     <img src="{{ list.image_url }}" style="height: 190px;" class="imgl">
                 {% endif %}
                 <div onclick="location.href='{{ list.hotel_chain_name }}';">
-                    <h3><b>{{ list.hotel_chain_name }}</b></h3>
+                    <h3><b>{{ list.name }}</b></h3>
                     <b-form-rating v-model="value"></b-form-rating>
                     <span class="fa fa-star {% if list.rating > 0 %} checked {% endif %}"></span>
                     <span class="fa fa-star {% if list.rating > 1 %} checked {% endif %}"></span>
@@ -22,7 +22,7 @@
                     <span class="fa fa-star {% if list.rating > 4 %} checked {% endif %}"></span>
                     <h6><b>Rate:</b> {{ list.rating }}</h6>
         
-                    <h style="font-size: small; color: gray; position:absolute;">Phone Number {{ list.phone_number }}</h>
+                    <h style="font-size: small; color: gray; position:absolute;">Phone Number {{ list.nTelephone }}</h>
                     
                 </div>
                 

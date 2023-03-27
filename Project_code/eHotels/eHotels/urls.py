@@ -19,5 +19,6 @@ from app import views
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("hotel_chains", views.hotel_chains_listing, name="hotel_chains"),
     path('admin/', admin.site.urls),
 ]

@@ -12,11 +12,12 @@
         <h1>eHotels</h1>
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'index' %}">Hotel Chains</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="{% url 'index' %}">Hotels</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'hotel_chains' %}">Hotel Chains</a>
+            </li>
+            
         </ul>
         <hr>
         {% block body %}

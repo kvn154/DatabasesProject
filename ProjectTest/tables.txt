@@ -5,8 +5,9 @@
 CREATE TABLE hotel_chain(
 chain_ID int NOT NULL,
 centAddress VARCHAR(150),
+name VARCHAR(150),
 email VARCHAR(256),
-nTelephone int, /*I put 12 to adjust international size 
+nTelephone VARCHAR(20), /*I put 12 to adjust international size 
 calling to canada and other countriesUsing the modern global 
 format for telephone numbers, a Canadian number would be 
 written as +1NPANXXXXXX -WIKIPEDIA (Im not including the + sign)
@@ -16,13 +17,15 @@ chainRating int,
 PRIMARY KEY(chain_ID)
 );
 
-CREATE TABLE hotel(
+CREATE TABLE app_hotel(
     hotelAddress VARCHAR(150),
     hotel_ID int NOT NULL,
     --nRooms(), KEVIN FUNCTION
-    nTelephone int,
+	name VARCHAR(150),
+    nTelephone VARCHAR(20),
 	chain_ID int,
-    hotelRating int,
+    rating int,
+	image_url VARCHAR(500),
     PRIMARY KEY(hotel_ID),
 	FOREIGN KEY (chain_ID) REFERENCES hotel_chain
 );
