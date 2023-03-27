@@ -12,8 +12,11 @@
                 {% if list.image_url %}
                     <img src="{{ list.image_url }}" style="height: 190px;" class="imgl">
                 {% endif %}
-                <div onclick="location.href='{{ list.hotel_chain_name }}';">
+                <div onclick="location.href='{{ list.chain_id }}';">
                     <h3><b>{{ list.name }}</b></h3>
+                    {% if list.chain_id %}
+                    <h6 style="font-size: small; color: gray;">{{ list.chain_id.name }}</h6>
+                    {% endif %}
                     <b-form-rating v-model="value"></b-form-rating>
                     <span class="fa fa-star {% if list.rating > 0 %} checked {% endif %}"></span>
                     <span class="fa fa-star {% if list.rating > 1 %} checked {% endif %}"></span>
@@ -21,8 +24,8 @@
                     <span class="fa fa-star {% if list.rating > 3 %} checked {% endif %}"></span>
                     <span class="fa fa-star {% if list.rating > 4 %} checked {% endif %}"></span>
                     <h6><b>Rate:</b> {{ list.rating }}</h6>
-        
-                    <h style="font-size: small; color: gray; position:absolute;">Phone Number {{ list.nTelephone }}</h>
+                    <h6 style="font-size: small; color: gray;">Address: {{ list.address }}</h6>
+                    <h6 style="font-size: small; color: gray;">Phone Number: {{ list.nTelephone }}</h6>
                     
                 </div>
                 
