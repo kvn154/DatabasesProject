@@ -14,7 +14,7 @@ class hotel_chain(models.Model):
     name = models.CharField(max_length=150)
     nTelephone = models.CharField(max_length=20)
     rating = models.IntegerField()
-    image_url = models.URLField(max_length=500, blank=True)
+    image_url = models.URLField(max_length=500, blank=True, null= True)
     objects = models.Manager()
 
     def __str__(self):
@@ -23,11 +23,12 @@ class hotel_chain(models.Model):
 class hotel(models.Model):
     hotel_id = models.IntegerField(primary_key=True)
     address = models.CharField(max_length=150)
+    zone = models.CharField(max_length=150)
     chain_id = models.ForeignKey(hotel_chain, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     nTelephone = models.CharField(max_length=20)
     rating = models.IntegerField()
-    image_url = models.URLField(max_length=500, blank=True)
+    image_url = models.URLField(max_length=500, blank=True, null= True)
     objects = models.Manager()
     
 

@@ -6,13 +6,17 @@
     color: orange;
 }
     </style>
-    <h2>Active Listings</h2>
+    <h2>{% if category %} {{ category }} {% if category > 1 %} Stars {% else %} Star {% endif %} Hotels 
+        {% elif zone %} Hotels at {{ zone.title }}
+        {% elif isHotelChain%} Hotel Chains {% elif HotelChain %} {{ HotelChain.name }} 's Hotels {% else %} Hotels
+        {% endif %}
+    </h2>
     {% for list in hotels_listings %}
-            <div class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
+            <div onclick="location.href='{{ list.chain_id }}';" class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
                 {% if list.image_url %}
                     <img src="{{ list.image_url }}" style="height: 190px;" class="imgl">
                 {% endif %}
-                <div onclick="location.href='{{ list.chain_id }}';">
+                <div >
                     <h3><b>{{ list.name }}</b></h3>
                     {% if list.chain_id %}
                     <h6 style="font-size: small; color: gray;">{{ list.chain_id.name }}</h6>
@@ -24,6 +28,8 @@
                     <span class="fa fa-star {% if list.rating > 3 %} checked {% endif %}"></span>
                     <span class="fa fa-star {% if list.rating > 4 %} checked {% endif %}"></span>
                     <h6><b>Rate:</b> {{ list.rating }}</h6>
+                    <h6 style="font-size: small; color: gray;">{{ list.zone }}</h6>
+
                     <h6 style="font-size: small; color: gray;">Address: {{ list.address }}</h6>
                     <h6 style="font-size: small; color: gray;">Phone Number: {{ list.nTelephone }}</h6>
                     

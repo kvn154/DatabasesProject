@@ -22,4 +22,10 @@ urlpatterns = [
     path("hotel_chains", views.hotel_chains_listing, name="hotel_chains"),
     path("<int:id>", views.hotel_for_hotel_chain, name = "hotel_for_hotel_chain"),
     path('admin/', admin.site.urls),
+    path("categories", views.category, name="categories"),
+    path("zones", views.zones, name="zones"),
+
+    path("category=<int:category>", views.list_category, name="list_category"),
+    path("zone=<str:zone>", views.list_zone, name="list_zone")
+
 ]

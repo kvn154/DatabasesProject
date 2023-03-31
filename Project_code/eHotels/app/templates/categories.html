@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <style>
+        .checked {
+    color: orange;
+    }
+    </style>
+    <h2>Categories</h2>
+    <ul>
+        {% for category in categories %}
+        <div onclick='location.href="category={{category}}";' class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
+            
+            <div >
+                <h1><b>{{ category }} {% if category > 1 %} Stars {% else %} Star {% endif %} Hotels</b></h1>
+                <b-form-rating v-model="value"></b-form-rating>
+                <span class="fa fa-star {% if category > 0 %} checked {% endif %}"></span>
+                <span class="fa fa-star {% if category > 1 %} checked {% endif %}"></span>
+                <span class="fa fa-star {% if category > 2 %} checked {% endif %}"></span>
+                <span class="fa fa-star {% if category > 3 %} checked {% endif %}"></span>
+                <span class="fa fa-star {% if category > 4 %} checked {% endif %}"></span>
+            </div>
+            
+        </div>
+        {% endfor %}
+    </ul>
+{% endblock %}

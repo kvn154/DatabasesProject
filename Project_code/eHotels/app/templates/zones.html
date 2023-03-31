@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <style>
+        .checked {
+    color: orange;
+    }
+    </style>
+    <h2>Zones</h2>
+    <ul>
+        {% for zone, link in zones %}
+        <div onclick='location.href="zone={{ link }}";' class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
+            
+            <div >
+                <h1><b>Hotels at {{ zone.title }}</b></h1>
+            </div>
+            
+        </div>
+        {% endfor %}
+    </ul>
+{% endblock %}
