@@ -42,22 +42,7 @@ CREATE TABLE views(
     PRIMARY KEY(views_ID)
 );
 
-CREATE TABLE room(
-    price FLOAT,
-    capaCity_ID int,
-	FOREIGN KEY (capacity_ID) REFERENCES capacity,
-    extra_bed BOOLEAN,
-    views_ID int,
-	/* Here THE REFERENCES IS GOING TO BE TO VIEWS 
-	ID A NUMBER WHICH IN THE TABLE VIEWS MATCHES
-	WITH A DESCRIPTION*/
-	FOREIGN KEY(views_ID) REFERENCES views,
-	hotel_ID int NOT NULL,
-	FOREIGN KEY(hotel_ID) REFERENCES hotel,
-    --available (),;KEVIN FUNCTIUOBN
-    rNumber INT NOT NULL,
-    PRIMARY KEY (rNumber,hotel_ID)
-);
+
 
 CREATE TABLE client(
     FirstName   VARCHAR(50) NOT NULL,
@@ -145,4 +130,42 @@ CREATE TABLE payment(
     location_ID int NOT NULL,
     FOREIGN KEY (location_ID) REFERENCES location,
     PRIMARY KEY(payment_ID)
+);
+
+/*(10%) L’utilisateur doit pouvoir également voir deux vues spécifiques. Vous devez
+implémenter les vues en tant que vues SQL. Vue 1: la première vue est le nombre de chambres
+disponibles par zone. Vue 2: la deuxième vue est la capacité de toutes les chambres d’un hôtel
+spécifique. 
+
+
+THE VIEW BELLOW IS FOR VIEW 2.
+It includes the information a client would probably
+want to see when booking a hotel,
+so it doesnt include damages or any of the ids just rNumber*/
+
+CREATE VIEW Room_Info_with_Capacity AS
+SELECT H.name,H.hoteladdress,
+H.ntelephone,H.hotelrating,R.rNumber,
+C.size_name, V.description, R.price
+FROM hotel H 
+NATURAL JOIN room R NATURAL JOIN capacity C
+GROUP BY C.size_name;
+
+CREATE VIEW 
+
+CREATE TABLE room(
+    price FLOAT,
+    capaCity_ID int,
+	FOREIGN KEY (capacity_ID) REFERENCES capacity,
+    extra_bed BOOLEAN,
+    views_ID int,
+	/* Here THE REFERENCES IS GOING TO BE TO VIEWS 
+	ID A NUMBER WHICH IN THE TABLE VIEWS MATCHES
+	WITH A DESCRIPTION*/
+	FOREIGN KEY(views_ID) REFERENCES views,
+	hotel_ID int NOT NULL,
+	FOREIGN KEY(hotel_ID) REFERENCES hotel,
+    --available (),;KEVIN FUNCTIUOBN
+    rNumber INT NOT NULL,
+    PRIMARY KEY (rNumber,hotel_ID)
 );
