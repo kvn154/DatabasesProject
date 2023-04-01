@@ -141,7 +141,11 @@ spécifique.
 THE VIEW BELLOW IS FOR VIEW 2.
 It includes the information a client would probably
 want to see when booking a hotel,
-so it doesnt include damages or any of the ids just rNumber*/
+so it doesnt include damages or
+ any of the ids just rNumber
+ This would probably need a where class 
+ to check if the room is available
+ */
 
 CREATE VIEW Room_Info_with_Capacity AS
 SELECT H.name,H.hoteladdress,
@@ -151,7 +155,6 @@ FROM hotel H
 NATURAL JOIN room R NATURAL JOIN capacity C
 GROUP BY C.size_name;
 
-CREATE VIEW 
 
 CREATE TABLE room(
     price FLOAT,
@@ -169,3 +172,79 @@ CREATE TABLE room(
     rNumber INT NOT NULL,
     PRIMARY KEY (rNumber,hotel_ID)
 );
+
+
+
+
+/*These two functions create the
+archive table and insert every information into them*/
+
+
+
+CREATE TABLE reservation_archive AS 
+TABLE reservation;
+
+CREATE TABLE location_archive AS 
+TABLE location;
+
+
+
+
+/*These two triggers
+insert information into the archive tables
+every time it is inserted on the original tables */
+
+CREATE FUNCTION insert_New_location() RETURNS trigger AS $$
+    BEGIN
+       INSERT INTO location_archive VALUES((NEW).*);
+       RETURN NEW;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER insert_New_location
+BEFORE INSERT ON location 
+FOR EACH ROW
+EXECUTE PROCEDURE insert_New_location();
+
+CREATE FUNCTION insert_New_reservation() RETURNS trigger AS $$
+    BEGIN
+       INSERT INTO reservation_archive VALUES((NEW).*);
+       RETURN NEW;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER insert_New_reservation
+BEFORE INSERT ON reservation 
+FOR EACH ROW
+EXECUTE PROCEDURE insert_New_reservation();
+
+
+/*These two finctions insert 
+information into the archive everytime there is an update
+so that we have in the archive the information available
+for the things before and after the update */
+
+CREATE FUNCTION update_location() RETURNS trigger AS $$
+    BEGIN
+       INSERT INTO location_archive VALUES((NEW).*);
+       RETURN NEW;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_location
+BEFORE UPDATE ON location 
+FOR EACH ROW
+EXECUTE PROCEDURE update_location();
+
+
+CREATE FUNCTION update_reservation() RETURNS trigger AS $$
+    BEGIN
+       INSERT INTO reservation_archive VALUES((NEW).*);
+       RETURN NEW;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_reservation
+BEFORE UPDATE ON reservation
+FOR EACH ROW
+EXECUTE PROCEDURE update_reservation();
