@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import hotel, hotel_chain
+from .models import hotel, hotel_chain, room
 
 
 # Create your views here.
@@ -53,6 +53,11 @@ def list_category(request, category):
     return render(request, "index.html",{
         "hotels_listings": hotel.objects.raw('SELECT * FROM app_hotel where rating = '+str(category)),
         "category": category
+    })
+
+def reservation(request, hotel_id):
+    return render(request, "reservation.html", {
+        "hotel": hotel.objects.raw('SELECT * FROM app_hotel where hotel_id = 1')[0]
     })
 
 

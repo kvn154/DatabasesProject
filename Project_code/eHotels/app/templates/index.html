@@ -29,9 +29,8 @@
                     <span class="fa fa-star {% if list.rating > 4 %} checked {% endif %}"></span>
                     <h6><b>Rate:</b> {{ list.rating }}</h6>
                     <h6 style="font-size: small; color: gray;">{{ list.zone }}</h6>
-
-                    <h6 style="font-size: small; color: gray;">Address: {{ list.address }}</h6>
-                    <h6 style="font-size: small; color: gray;">Phone Number: {{ list.nTelephone }}</h6>
+                    <h6 style="font-size: small; color: gray;">Address: {{ list.address }}{% for address in list.addressArray %} {{ address }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
+                    <h6 style="font-size: small; color: gray;">Phone Number: {% for ntelephone in list.nTelephones %} {{ ntelephone }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
                     
                 </div>
                 
