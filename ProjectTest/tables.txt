@@ -156,6 +156,17 @@ NATURAL JOIN room R NATURAL JOIN capacity C
 GROUP BY C.size_name;
 
 
+/*This second view where available
+measn that the room has no damage */
+CREATE VIEW Room_Available AS
+SELECT Count(R.rnumber), H.zone
+FROM Room R, Hotel H, damage D
+WHERE H.hotel_id=R.hotel_id, D.rnumber !=R.rnumber, D.hotel_id!=R.hotel_id,
+H.hotel_id!= D.hotel_id
+GROUP BY H.zone;
+
+
+
 CREATE TABLE room(
     price FLOAT,
     capaCity_ID int,
