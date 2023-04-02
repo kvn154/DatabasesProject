@@ -3,82 +3,129 @@
 
 
 {% block body %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <style>
-    .checked {
-        color: orange;
+    .distance{
+        padding: 10px;
+    }
+    .leftDistance{
+        padding-left: 35px;
     }
 </style>
-    <h2><b>Hotel: {{ hotel.name }}</b></h2>
+    <h1><b>{{ hotel.name }}</b></h1>
     {% if hotel.image_url %}
         <img src="{{ hotel.image_url }}" class="center">
     {% endif %}
     
     <b-form-rating v-model="value"></b-form-rating>
-    <span class="fa fa-star {% if hotel.rating > 0 %} checked {% endif %}"></span>
+    <div class="d-flex justify-content-center distance">
+        <span class="fa fa-star {% if hotel.rating > 0 %} checked {% endif %}"></span>
     <span class="fa fa-star {% if hotel.rating > 1 %} checked {% endif %}"></span>
     <span class="fa fa-star {% if hotel.rating > 2 %} checked {% endif %}"></span>
     <span class="fa fa-star {% if hotel.rating > 3 %} checked {% endif %}"></span>
     <span class="fa fa-star {% if hotel.rating > 4 %} checked {% endif %}"></span>
-    <h3 style="font-size: small; color: gray;">{{ hotel.chain_id.name }}</h3>
-    <h6 style="font-size: small; color: gray;">Address: {{ hotel.address }} {{ hotel.zone }}</h6>
-    <h6 style="font-size: small; color: gray;">Phone Number: {% for ntelephone in hotel.nTelephones %} {{ ntelephone }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
+    </div>
+    <h3><b>Reserve Room</b></h3>
+    <h6 class = "leftDistance" style="font-size: small; color: gray;">  {{ hotel.chain_id.name }}</h6>
+    <h6 class = "leftDistance" style="font-size: small; color: gray;">  Address: {{ hotel.address }} {{ hotel.zone }}</h6>
+    <h6 class = "leftDistance" style="font-size: small; color: gray;">  Phone Number: {% for ntelephone in hotel.nTelephones %} {{ ntelephone }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
     
-    {% if message %}
-        <h6 style="color: red;">{{ message }}</h6>
-    {% endif %}
-    {% if product.is_active %}
-        <a>{{ count }} bid(s) so far.</a>
-        {% if ishighest %}
-            <a>Your bid is the current bid</a>
-        {% endif %}
-        <form action="{% url 'listing_product' product.id %}" method="post">
-            {% csrf_token %}
-            {% if Bid %}
-                <input type="number" step="0.01" min="{{ Bid.bid }}" placeholder="Bid" name="bid" class="inp">
-            {% else %}
-                <input type="number" step="0.01" min="{{ product.starting_bid }}" placeholder="Bid" name="bid" class="inp">
-            {% endif %}
-            <input type="submit" value="Place Bid" class="placebid">
-        </form>
-    {% else %}
-        <h4><b>Sold!
-        {% if ishighest %}
-         You Won
-        {% endif %}
-        </b></h4>
-    {% endif %}
+    {% if step == 1%}
+    <form action="{% url 'choose_room' 53 %}" method="post">
+    {% csrf_token %}
+    {% if capacities %}
+    <h4><b>Capacity</b></h4>
+        <div class="distance leftDistance" style="padding-left: 45px;">
+       {% for capacity in capacities %}
+        <input type="radio" class="btn-check" name="capacities"  value="{{capacity.id}}" id="capacity_{{capacity}}" autocomplete="off" >
+        <label class="btn btn-outline-dark" for="capacity_{{capacity}}">{{capacity.capacity.title}}</label>
+      {% endfor %}
+    </div>
     <hr>
-    <h4><b>Details</b></h4>
-    <ul>
-        <li>Listed by: {{ owner.ownerid }}</li>
-
-        {% if product.category %}
-            <li>category: {{ product.category }}</li>
-        {% else %}
-        <li>category: No Category Listed</li>
-
-        {% endif %}
-    </ul>
-    <hr>
-    {% if user.is_authenticated and product.is_active %}
-        <form action="{% url 'comment' product.id %}" method="POST" style="padding-block-end: 50px;">
-            {% csrf_token %}
-            <input type="text" name="comment" maxlength="2000" placeholder="Comment" class="inp">
-            <input type="submit" value="Send" class="placebid">
-        </form>
-        
     {% endif %}
-    {% if comments %}
-        <h3 style="padding-block-end: 20px;"><b>Comments:</b></h3>
-        {% for comment in comments %}
-            <div>
-                <h5><b>{{ comment.user_id.username }}:</b></h5>
-                <h6 style="color: gray; font-size: small">{{ comment.date }}</h6>
-                    <div style="padding-left: 15px;">{{ comment.comment}}</div>
-                <hr>
-            </div>
+    {% if views %}
+    <h4><b>View</b></h4>
+      <div class="btn-group distance leftDistance" role="group" aria-label="Basic checkbox toggle button group  d-flex justify-content-center"></div>
+       {% for view in views %}
+       
+        <input type="checkbox" name = "views" class="btn-check" id="view_{{view}}" value="{{view}}" autocomplete="off">
+        <label class="btn btn-outline-dark " for="view_{{view}}">{{ view.title }}</label>
+      
         {% endfor %}
+     </div>
+    <hr>
     {% endif %}
+    {% if extrabed %}
+    <h4><b>Extra bed</b></h4>
+      <div class="btn-group distance leftDistance" role="group" aria-label="Basic checkbox toggle button group  d-flex justify-content-center"></div>
+      
+      <input type="checkbox" class="btn-check" id="extrabed" name = "extrabed" value = "True" autocomplete="off">
+      <label class="btn btn-outline-dark " for="extrabed">Extra Bed</label>
     
+      </div>
+    <hr>
+    {% endif %}
+    {% if not capacities and not views and not extrabed %}
+    <div class="alert alert-danger" role="alert">
+        No Rooms Available
+      </div>
+    {% else %}
+    <h4><b>Select Date</b></h4>
+    <div class = "leftDistance">
+      <div class="form-group row">
+        <label for="startdate" class="col-sm-2 col-form-label">Start Date</label>
+        <input id="startdate" name = "startdate" width="276" placeholder="Start Date" required/>
+        <script>
+            $('#startdate').datepicker({
+                uiLibrary: 'bootstrap4'
+            });
+        </script>
+      </div>
+      
+      <div class="form-group row">
+        <label for="enddate" class="col-sm-2 col-form-label">End Date</label>
+        <input id="enddate" name="enddate" width="276" placeholder="End Date" required/>
+        <script>
+            $('#enddate').datepicker({
+                uiLibrary: 'bootstrap4'
+            });
+        </script>
+      </div>
+      
+    </div>
+    {% if errormessage %}
+      <div class="alert alert-danger" role="alert">
+        {{errormessage}}
+      </div>
+      {%endif%}
+    <div class=" d-flex justify-content-center distance">
+      <input class="btn btn-dark " style="width: 60%;" type="submit" value="Step 2">
+    </div>
+    {% endif %}
+  </form>
+  {%elif step == 2%}
+  {% for room in rooms %}
+  <div onclick="location.href='reserve={{ list.hotel_id }}';" class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
+    
+        <div >
+            <h3><b>{{ room.capacity }}</b></h3>
+            {% if list.chain_id %}
+            <h6 style="font-size: small; color: gray;">{{ list.chain_id.name }}</h6>
+            {% endif %}
+            <b-form-rating v-model="value"></b-form-rating>
+            <span class="fa fa-star {% if list.rating > 0 %} checked {% endif %}"></span>
+            <span class="fa fa-star {% if list.rating > 1 %} checked {% endif %}"></span>
+            <span class="fa fa-star {% if list.rating > 2 %} checked {% endif %}"></span>
+            <span class="fa fa-star {% if list.rating > 3 %} checked {% endif %}"></span>
+            <span class="fa fa-star {% if list.rating > 4 %} checked {% endif %}"></span>
+            <h6><b>Rate:</b> {{ room.price }}</h6>
+            <h6 style="font-size: small; color: gray;">{{ list.zone }}</h6>
+            <h6 style="font-size: small; color: gray;">Address: {% for view in room.view %} {{ view }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
+            <h6 style="font-size: small; color: gray;">Phone Number: {% for ntelephone in list.nTelephones %} {{ ntelephone }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
+            
+        </div>
         
+    </div>
+  {% endfor%}
+  {% endif %}
 {% endblock %}

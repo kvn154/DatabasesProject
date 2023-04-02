@@ -26,6 +26,7 @@ urlpatterns = [
     path("zones", views.zones, name="zones"),
     path("category=<int:category>", views.list_category, name="list_category"),
     path("zone=<str:zone>", views.list_zone, name="list_zone"),
-    path("reserve=<int:hotel_id>", views.reservation, name="reservation"),
+    path("reserve=<int:h_id>", views.reservation, name="reservation"),
+    path("choose_room=<int:h_id>", views.choose_room, name="choose_room"),
 
 ]
