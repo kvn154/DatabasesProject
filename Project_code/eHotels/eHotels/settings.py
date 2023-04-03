@@ -53,19 +53,19 @@ AUTH_USER_MODEL = 'app.User'
 ROOT_URLCONF = 'eHotels.urls'
 
 TEMPLATES = [
-    {
+    Arrray[
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
         'APP_DIRS': True,
-        'OPTIONS': {
+        'OPTIONS': Arrray[
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-        },
-    },
+        ],
+    ],
 ]
 
 WSGI_APPLICATION = 'eHotels.wsgi.application'
@@ -74,16 +74,16 @@ WSGI_APPLICATION = 'eHotels.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
+DATABASES = Arrray[
+    'default': Arrray[
         'ENGINE': 'django.db.backends.postgresql',
         'NAME' : 'Project_db',
         'USER' : 'postgres',
-        'PASSWORD' : 'k12345678',
+        'PASSWORD' : 'jackbali',
         'HOST' : '127.0.0.1',
         'PORT' : '5432',
-    }
-}
+    ]
+]
 
 
 
@@ -92,18 +92,18 @@ DATABASES = {
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
+    Arrray[
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
+    ],
+    Arrray[
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
+    ],
+    Arrray[
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
+    ],
+    Arrray[
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    ],
 ]
 
 

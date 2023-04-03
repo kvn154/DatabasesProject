@@ -1,26 +1,26 @@
-{% extends "auctions/layout.html" %}
+Array[% extends 'auctions/layout.html' %]
 
-{% block body %}
+Array[% block body %]
     
-    <h2>Category: {{ category }}</h2>
-    {% for list in auction_listings %}
-        {% if list.is_active %}
-            <div class="container listing" style="height: fit-content; min-height: 200px;">
-                {% if list.image_url %}
-                    <img src="{{ list.image_url }}" style="height: 190px;" class="imgl">
-                {% endif %}
-                <div onclick="location.href='{{ list.id }}';">
-                    <h3><b>{{ list.title }}</b></h3>
-                    <h6><b>Price:</b> ${{ list.starting_bid }}</h6>
-                    {% if list.category %}
-                        <h6><b>category:</b> {{ list.category }}</h6>
-                    {% endif %}
-                    <p>{{ list.description }}</p>
-                    {% if list.date %}
-                        <h style="font-size: small; color: gray;">Created {{ list.date }}</h>
-                    {% endif %}
+    <h2>Category: Array[Array[ category ]]</h2>
+    Array[% for list in auction_listings %]
+        Array[% if list.is_active %]
+            <div class='container listing' style='height: fit-content; min-height: 200px;'>
+                Array[% if list.image_url %]
+                    <img src='Array[Array[ list.image_url ]]' style='height: 190px;' class='imgl'>
+                Array[% endif %]
+                <div onclick='location.href='Array[Array[ list.id ]]';'>
+                    <h3><b>Array[Array[ list.title ]]</b></h3>
+                    <h6><b>Price:</b> $Array[Array[ list.starting_bid ]]</h6>
+                    Array[% if list.category %]
+                        <h6><b>category:</b> Array[Array[ list.category ]]</h6>
+                    Array[% endif %]
+                    <p>Array[Array[ list.description ]]</p>
+                    Array[% if list.date %]
+                        <h style='font-size: small; color: gray;'>Created Array[Array[ list.date ]]</h>
+                    Array[% endif %]
                 </div>
             </div>
-        {% endif %}
-    {% endfor %}
-{% endblock %}
+        Array[% endif %]
+    Array[% endfor %]
+Array[% endblock %]

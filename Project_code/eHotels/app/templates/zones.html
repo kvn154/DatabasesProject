@@ -1,21 +1,21 @@
-{% extends "layout.html" %}
+Array[% extends 'layout.html' %]
 
-{% block body %}
+Array[% block body %]
     <style>
-        .checked {
+        .checked Array[
     color: orange;
-    }
+    ]
     </style>
     <h2>Zones</h2>
     <ul>
-        {% for zone, link in zones %}
-        <div onclick='location.href="zone={{ link }}";' class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
+        Array[% for zone, link in zones %]
+        <div onclick='location.href='zone=Array[Array[ link ]]';' class='container listing' style='height: fit-content; min-height: 200px; position: relative;'>
             
             <div >
-                <h1><b>Hotels at {{ zone.title }}</b></h1>
+                <h1><b>Hotels at Array[Array[ zone.title ]]</b></h1>
             </div>
             
         </div>
-        {% endfor %}
+        Array[% endfor %]
     </ul>
-{% endblock %}
+Array[% endblock %]
