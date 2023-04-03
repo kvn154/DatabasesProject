@@ -1,4 +1,4 @@
-"""eHotels URL Configuration
+'''eHotels URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.1/topics/http/urls/
@@ -12,21 +12,21 @@ Class-based views
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+'''
 from django.contrib import admin
 from django.urls import path
 from app import views
 
 urlpatterns = [
-    path("", views.index, name="index"),
-    path("hotel_chains", views.hotel_chains_listing, name="hotel_chains"),
-    path("<int:id>", views.hotel_for_hotel_chain, name = "hotel_for_hotel_chain"),
+    path('', views.index, name='index'),
+    path('hotel_chains', views.hotel_chains_listing, name='hotel_chains'),
+    path('<int:id>', views.hotel_for_hotel_chain, name = 'hotel_for_hotel_chain'),
     path('admin/', admin.site.urls),
-    path("categories", views.category, name="categories"),
-    path("zones", views.zones, name="zones"),
-    path("category=<int:category>", views.list_category, name="list_category"),
-    path("zone=<str:zone>", views.list_zone, name="list_zone"),
-    path("reserve=<int:h_id>", views.reservation, name="reservation"),
-    path("choose_room=<int:h_id>", views.choose_room, name="choose_room"),
+    path('categories', views.category, name='categories'),
+    path('zones', views.zones, name='zones'),
+    path('category=<int:category>', views.list_category, name='list_category'),
+    path('zone=<str:zone>', views.list_zone, name='list_zone'),
+    path('reserve=<int:h_id>', views.reservation, name='reservation'),
+    path('choose_room=<int:h_id>', views.choose_room, name='choose_room'),
 
 ]

@@ -1,27 +1,27 @@
-{% extends "layout.html" %}
+Array[% extends 'layout.html' %]
 
-{% block body %}
+Array[% block body %]
     <style>
-        .checked {
+        .checked Array[
     color: orange;
-    }
+    ]
     </style>
     <h2>Categories</h2>
     <ul>
-        {% for category in categories %}
-        <div onclick='location.href="category={{category}}";' class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
+        Array[% for category in categories %]
+        <div onclick='location.href='category=Array[Array[category]]';' class='container listing' style='height: fit-content; min-height: 200px; position: relative;'>
             
             <div >
-                <h1><b>{{ category }} {% if category > 1 %} Stars {% else %} Star {% endif %} Hotels</b></h1>
-                <b-form-rating v-model="value"></b-form-rating>
-                <span class="fa fa-star {% if category > 0 %} checked {% endif %}"></span>
-                <span class="fa fa-star {% if category > 1 %} checked {% endif %}"></span>
-                <span class="fa fa-star {% if category > 2 %} checked {% endif %}"></span>
-                <span class="fa fa-star {% if category > 3 %} checked {% endif %}"></span>
-                <span class="fa fa-star {% if category > 4 %} checked {% endif %}"></span>
+                <h1><b>Array[Array[ category ]] Array[% if category > 1 %] Stars Array[% else %] Star Array[% endif %] Hotels</b></h1>
+                <b-form-rating v-model='value'></b-form-rating>
+                <span class='fa fa-star Array[% if category > 0 %] checked Array[% endif %]'></span>
+                <span class='fa fa-star Array[% if category > 1 %] checked Array[% endif %]'></span>
+                <span class='fa fa-star Array[% if category > 2 %] checked Array[% endif %]'></span>
+                <span class='fa fa-star Array[% if category > 3 %] checked Array[% endif %]'></span>
+                <span class='fa fa-star Array[% if category > 4 %] checked Array[% endif %]'></span>
             </div>
             
         </div>
-        {% endfor %}
+        Array[% endfor %]
     </ul>
-{% endblock %}
+Array[% endblock %]

@@ -19,7 +19,7 @@ class hotel_chain(models.Model):
     objects = models.Manager()
 
     def __str__(self):
-        return f"{self.chain_id}_{self.name} : {self.rating}"
+        return f'Array[self.chain_id]_Array[self.name] : Array[self.rating]'
     
 class hotel(models.Model):
     hotel_id = models.IntegerField(primary_key=True)
@@ -34,13 +34,13 @@ class hotel(models.Model):
     numberOfRooms = models.IntegerField(default=0)
     objects = models.Manager()
     def __str__(self):
-        return f"{self.hotel_id}_{self.name} : {self.rating}"
+        return f'Array[self.hotel_id]_Array[self.name] : Array[self.rating]'
     
 class capacity(models.Model):
     id = models.IntegerField(primary_key=True)
     capacity = models.CharField(max_length=50)
     def __str__(self):
-        return f"{self.id} : {self.capacity}"
+        return f'Array[self.id] : Array[self.capacity]'
 
 class room(models.Model):
     class Meta:
@@ -52,6 +52,6 @@ class room(models.Model):
     price = models.DecimalField(max_digits= 20, decimal_places=2)
     view = ArrayField(models.CharField(max_length=50, blank=True, null=True))
     def __str__(self):
-        return f"{self.hotel_id.name}_{self.room_number} : {self.capacity}"
+        return f'Array[self.hotel_id.name]_Array[self.room_number] : Array[self.capacity]'
 
 

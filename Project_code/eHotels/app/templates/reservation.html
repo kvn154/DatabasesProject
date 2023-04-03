@@ -1,131 +1,131 @@
-{% extends "layout.html" %}
+Array[% extends 'layout.html' %]
 
 
 
-{% block body %}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+Array[% block body %]
+<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous'>
 <style>
-    .distance{
+    .distanceArray[
         padding: 10px;
-    }
-    .leftDistance{
+    ]
+    .leftDistanceArray[
         padding-left: 35px;
-    }
+    ]
 </style>
-    <h1><b>{{ hotel.name }}</b></h1>
-    {% if hotel.image_url %}
-        <img src="{{ hotel.image_url }}" class="center">
-    {% endif %}
+    <h1><b>Array[Array[ hotel.name ]]</b></h1>
+    Array[% if hotel.image_url %]
+        <img src='Array[Array[ hotel.image_url ]]' class='center'>
+    Array[% endif %]
     
-    <b-form-rating v-model="value"></b-form-rating>
-    <div class="d-flex justify-content-center distance">
-        <span class="fa fa-star {% if hotel.rating > 0 %} checked {% endif %}"></span>
-    <span class="fa fa-star {% if hotel.rating > 1 %} checked {% endif %}"></span>
-    <span class="fa fa-star {% if hotel.rating > 2 %} checked {% endif %}"></span>
-    <span class="fa fa-star {% if hotel.rating > 3 %} checked {% endif %}"></span>
-    <span class="fa fa-star {% if hotel.rating > 4 %} checked {% endif %}"></span>
+    <b-form-rating v-model='value'></b-form-rating>
+    <div class='d-flex justify-content-center distance'>
+        <span class='fa fa-star Array[% if hotel.rating > 0 %] checked Array[% endif %]'></span>
+    <span class='fa fa-star Array[% if hotel.rating > 1 %] checked Array[% endif %]'></span>
+    <span class='fa fa-star Array[% if hotel.rating > 2 %] checked Array[% endif %]'></span>
+    <span class='fa fa-star Array[% if hotel.rating > 3 %] checked Array[% endif %]'></span>
+    <span class='fa fa-star Array[% if hotel.rating > 4 %] checked Array[% endif %]'></span>
     </div>
     <h3><b>Reserve Room</b></h3>
-    <h6 class = "leftDistance" style="font-size: small; color: gray;">  {{ hotel.chain_id.name }}</h6>
-    <h6 class = "leftDistance" style="font-size: small; color: gray;">  Address: {{ hotel.address }} {{ hotel.zone }}</h6>
-    <h6 class = "leftDistance" style="font-size: small; color: gray;">  Phone Number: {% for ntelephone in hotel.nTelephones %} {{ ntelephone }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
+    <h6 class = 'leftDistance' style='font-size: small; color: gray;'>  Array[Array[ hotel.chain_id.name ]]</h6>
+    <h6 class = 'leftDistance' style='font-size: small; color: gray;'>  Address: Array[Array[ hotel.address ]] Array[Array[ hotel.zone ]]</h6>
+    <h6 class = 'leftDistance' style='font-size: small; color: gray;'>  Phone Number: Array[% for ntelephone in hotel.nTelephones %] Array[Array[ ntelephone ]] Array[% if not forloop.last %]/Array[% endif %] Array[% endfor %]</h6>
     
-    {% if step == 1%}
-    <form action="{% url 'choose_room' 53 %}" method="post">
-    {% csrf_token %}
-    {% if capacities %}
+    Array[% if step == 1%]
+    <form action='Array[% url 'choose_room' 53 %]' method='post'>
+    Array[% csrf_token %]
+    Array[% if capacities %]
     <h4><b>Capacity</b></h4>
-        <div class="distance leftDistance" style="padding-left: 45px;">
-       {% for capacity in capacities %}
-        <input type="radio" class="btn-check" name="capacities"  value="{{capacity.id}}" id="capacity_{{capacity}}" autocomplete="off" >
-        <label class="btn btn-outline-dark" for="capacity_{{capacity}}">{{capacity.capacity.title}}</label>
-      {% endfor %}
+        <div class='distance leftDistance' style='padding-left: 45px;'>
+       Array[% for capacity in capacities %]
+        <input type='radio' class='btn-check' name='capacities'  value='Array[Array[capacity.id]]' id='capacity_Array[Array[capacity]]' autocomplete='off' >
+        <label class='btn btn-outline-dark' for='capacity_Array[Array[capacity]]'>Array[Array[capacity.capacity.title]]</label>
+      Array[% endfor %]
     </div>
     <hr>
-    {% endif %}
-    {% if views %}
+    Array[% endif %]
+    Array[% if views %]
     <h4><b>View</b></h4>
-      <div class="btn-group distance leftDistance" role="group" aria-label="Basic checkbox toggle button group  d-flex justify-content-center"></div>
-       {% for view in views %}
+      <div class='btn-group distance leftDistance' role='group' aria-label='Basic checkbox toggle button group  d-flex justify-content-center'></div>
+       Array[% for view in views %]
        
-        <input type="checkbox" name = "views" class="btn-check" id="view_{{view}}" value="{{view}}" autocomplete="off">
-        <label class="btn btn-outline-dark " for="view_{{view}}">{{ view.title }}</label>
+        <input type='checkbox' name = 'views' class='btn-check' id='view_Array[Array[view]]' value='Array[Array[view]]' autocomplete='off'>
+        <label class='btn btn-outline-dark ' for='view_Array[Array[view]]'>Array[Array[ view.title ]]</label>
       
-        {% endfor %}
+        Array[% endfor %]
      </div>
     <hr>
-    {% endif %}
-    {% if extrabed %}
+    Array[% endif %]
+    Array[% if extrabed %]
     <h4><b>Extra bed</b></h4>
-      <div class="btn-group distance leftDistance" role="group" aria-label="Basic checkbox toggle button group  d-flex justify-content-center"></div>
+      <div class='btn-group distance leftDistance' role='group' aria-label='Basic checkbox toggle button group  d-flex justify-content-center'></div>
       
-      <input type="checkbox" class="btn-check" id="extrabed" name = "extrabed" value = "True" autocomplete="off">
-      <label class="btn btn-outline-dark " for="extrabed">Extra Bed</label>
+      <input type='checkbox' class='btn-check' id='extrabed' name = 'extrabed' value = 'True' autocomplete='off'>
+      <label class='btn btn-outline-dark ' for='extrabed'>Extra Bed</label>
     
       </div>
     <hr>
-    {% endif %}
-    {% if not capacities and not views and not extrabed %}
-    <div class="alert alert-danger" role="alert">
+    Array[% endif %]
+    Array[% if not capacities and not views and not extrabed %]
+    <div class='alert alert-danger' role='alert'>
         No Rooms Available
       </div>
-    {% else %}
+    Array[% else %]
     <h4><b>Select Date</b></h4>
-    <div class = "leftDistance">
-      <div class="form-group row">
-        <label for="startdate" class="col-sm-2 col-form-label">Start Date</label>
-        <input id="startdate" name = "startdate" width="276" placeholder="Start Date" required/>
+    <div class = 'leftDistance'>
+      <div class='form-group row'>
+        <label for='startdate' class='col-sm-2 col-form-label'>Start Date</label>
+        <input id='startdate' name = 'startdate' width='276' placeholder='Start Date' required/>
         <script>
-            $('#startdate').datepicker({
+            $('#startdate').datepicker(Array[
                 uiLibrary: 'bootstrap4'
-            });
+            ]);
         </script>
       </div>
       
-      <div class="form-group row">
-        <label for="enddate" class="col-sm-2 col-form-label">End Date</label>
-        <input id="enddate" name="enddate" width="276" placeholder="End Date" required/>
+      <div class='form-group row'>
+        <label for='enddate' class='col-sm-2 col-form-label'>End Date</label>
+        <input id='enddate' name='enddate' width='276' placeholder='End Date' required/>
         <script>
-            $('#enddate').datepicker({
+            $('#enddate').datepicker(Array[
                 uiLibrary: 'bootstrap4'
-            });
+            ]);
         </script>
       </div>
       
     </div>
-    {% if errormessage %}
-      <div class="alert alert-danger" role="alert">
-        {{errormessage}}
+    Array[% if errormessage %]
+      <div class='alert alert-danger' role='alert'>
+        Array[Array[errormessage]]
       </div>
-      {%endif%}
-    <div class=" d-flex justify-content-center distance">
-      <input class="btn btn-dark " style="width: 60%;" type="submit" value="Step 2">
+      Array[%endif%]
+    <div class=' d-flex justify-content-center distance'>
+      <input class='btn btn-dark ' style='width: 60%;' type='submit' value='Step 2'>
     </div>
-    {% endif %}
+    Array[% endif %]
   </form>
-  {%elif step == 2%}
-  {% for room in rooms %}
-  <div onclick="location.href='reserve={{ list.hotel_id }}';" class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
+  Array[%elif step == 2%]
+  Array[% for room in rooms %]
+  <div onclick='location.href='reserve=Array[Array[ list.hotel_id ]]';' class='container listing' style='height: fit-content; min-height: 200px; position: relative;'>
     
         <div >
-            <h3><b>{{ room.capacity }}</b></h3>
-            {% if list.chain_id %}
-            <h6 style="font-size: small; color: gray;">{{ list.chain_id.name }}</h6>
-            {% endif %}
-            <b-form-rating v-model="value"></b-form-rating>
-            <span class="fa fa-star {% if list.rating > 0 %} checked {% endif %}"></span>
-            <span class="fa fa-star {% if list.rating > 1 %} checked {% endif %}"></span>
-            <span class="fa fa-star {% if list.rating > 2 %} checked {% endif %}"></span>
-            <span class="fa fa-star {% if list.rating > 3 %} checked {% endif %}"></span>
-            <span class="fa fa-star {% if list.rating > 4 %} checked {% endif %}"></span>
-            <h6><b>Rate:</b> {{ room.price }}</h6>
-            <h6 style="font-size: small; color: gray;">{{ list.zone }}</h6>
-            <h6 style="font-size: small; color: gray;">Address: {% for view in room.view %} {{ view }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
-            <h6 style="font-size: small; color: gray;">Phone Number: {% for ntelephone in list.nTelephones %} {{ ntelephone }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
+            <h3><b>Array[Array[ room.capacity ]]</b></h3>
+            Array[% if list.chain_id %]
+            <h6 style='font-size: small; color: gray;'>Array[Array[ list.chain_id.name ]]</h6>
+            Array[% endif %]
+            <b-form-rating v-model='value'></b-form-rating>
+            <span class='fa fa-star Array[% if list.rating > 0 %] checked Array[% endif %]'></span>
+            <span class='fa fa-star Array[% if list.rating > 1 %] checked Array[% endif %]'></span>
+            <span class='fa fa-star Array[% if list.rating > 2 %] checked Array[% endif %]'></span>
+            <span class='fa fa-star Array[% if list.rating > 3 %] checked Array[% endif %]'></span>
+            <span class='fa fa-star Array[% if list.rating > 4 %] checked Array[% endif %]'></span>
+            <h6><b>Rate:</b> Array[Array[ room.price ]]</h6>
+            <h6 style='font-size: small; color: gray;'>Array[Array[ list.zone ]]</h6>
+            <h6 style='font-size: small; color: gray;'>Address: Array[% for view in room.view %] Array[Array[ view ]] Array[% if not forloop.last %]/Array[% endif %] Array[% endfor %]</h6>
+            <h6 style='font-size: small; color: gray;'>Phone Number: Array[% for ntelephone in list.nTelephones %] Array[Array[ ntelephone ]] Array[% if not forloop.last %]/Array[% endif %] Array[% endfor %]</h6>
             
         </div>
         
     </div>
-  {% endfor%}
-  {% endif %}
-{% endblock %}
+  Array[% endfor%]
+  Array[% endif %]
+Array[% endblock %]

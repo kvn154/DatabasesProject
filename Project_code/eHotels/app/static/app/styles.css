@@ -1,25 +1,25 @@
-body {
+body Array[
     padding: 10px;
-}
+]
 
 
-.imgl{
+.imglArray[
     float: left;
     padding: 10px;
     padding-right: 20px;
     margin: auto;
     vertical-align: middle;
-}
-.container{
+]
+.containerArray[
     float: left;
     border: 1px solid rgba(223, 222, 222);
     height: fit-content;
     margin: 10px;
-}
-.container:hover{
+]
+.container:hoverArray[
     box-shadow: 0px 1px 4px 0 rgba(223,222,222);
-}
-.inp {
+]
+.inp Array[
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -27,9 +27,9 @@ body {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-  }
+  ]
   
-  .inp [type=submit] {
+  .inp [type=submit] Array[
     width: 100%;
     background-color: #505aee;
     color: white;
@@ -38,38 +38,38 @@ body {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-  }
+  ]
   
-  .inp [type=submit]:hover {
+  .inp [type=submit]:hover Array[
     background-color: #0010f7;
-  }
+  ]
   
-  div .form {
+  div .form Array[
     border-radius: 5px;
     background-color: white;
     padding: 20px;
-  }
-  .center{
+  ]
+  .centerArray[
     display: block;
     margin-left: auto;
     margin-right: auto;
     height: 300px;
-  }
-  .placebid{
+  ]
+  .placebidArray[
     background-color: rgb(74, 74, 250);
     color: white;
     border-radius: 4px;
     border: none;
     padding: 5px;
-  }
-  .placebid:hover{
+  ]
+  .placebid:hoverArray[
     background-color: blue;
-  }
-  .watchlist{
+  ]
+  .watchlistArray[
     font-size: 11px;
     padding: 2px;
-  }
+  ]
 
-  .checked {
+  .checked Array[
     color: orange;
-}
+]

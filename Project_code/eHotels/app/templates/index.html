@@ -1,44 +1,44 @@
-{% extends "layout.html" %}
+Array[% extends 'layout.html' %]
 
-{% block body %}
+Array[% block body %]
     <style>
-          .checked {
+          .checked Array[
     color: orange;
-}
+]
     </style>
-    <h2>{% if category %} {{ category }} {% if category > 1 %} Stars {% else %} Star {% endif %} Hotels 
-        {% elif zone %} Hotels at {{ zone.title }}
-        {% elif isHotelChain %} Hotel Chains {% elif HotelChain %} {{ HotelChain.name }} 's Hotels {% else %} Hotels
-        {% endif %}
+    <h2>Array[% if category %] Array[Array[ category ]] Array[% if category > 1 %] Stars Array[% else %] Star Array[% endif %] Hotels 
+        Array[% elif zone %] Hotels at Array[Array[ zone.title ]]
+        Array[% elif isHotelChain %] Hotel Chains Array[% elif HotelChain %] Array[Array[ HotelChain.name ]] 's Hotels Array[% else %] Hotels
+        Array[% endif %]
     </h2>
-    {% for list in hotels_listings %}
-            {% if isHotelChain %}
-            <div onclick="location.href='{{ list.chain_id }}';" class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
-            {% else %}
-            <div onclick="location.href='reserve={{ list.hotel_id }}';" class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
-            {% endif %}
-                {% if list.image_url %}
-                    <img src="{{ list.image_url }}" style="height: 190px;" class="imgl">
-                {% endif %}
+    Array[% for list in hotels_listings %]
+            Array[% if isHotelChain %]
+            <div onclick='location.href='Array[Array[ list.chain_id ]]';' class='container listing' style='height: fit-content; min-height: 200px; position: relative;'>
+            Array[% else %]
+            <div onclick='location.href='reserve=Array[Array[ list.hotel_id ]]';' class='container listing' style='height: fit-content; min-height: 200px; position: relative;'>
+            Array[% endif %]
+                Array[% if list.image_url %]
+                    <img src='Array[Array[ list.image_url ]]' style='height: 190px;' class='imgl'>
+                Array[% endif %]
                 <div >
-                    <h3><b>{{ list.name }}</b></h3>
-                    {% if list.chain_id %}
-                    <h6 style="font-size: small; color: gray;">{{ list.chain_id.name }}</h6>
-                    {% endif %}
-                    <b-form-rating v-model="value"></b-form-rating>
-                    <span class="fa fa-star {% if list.rating > 0 %} checked {% endif %}"></span>
-                    <span class="fa fa-star {% if list.rating > 1 %} checked {% endif %}"></span>
-                    <span class="fa fa-star {% if list.rating > 2 %} checked {% endif %}"></span>
-                    <span class="fa fa-star {% if list.rating > 3 %} checked {% endif %}"></span>
-                    <span class="fa fa-star {% if list.rating > 4 %} checked {% endif %}"></span>
-                    <h6><b>Rate:</b> {{ list.rating }}</h6>
-                    <h6 style="font-size: small; color: gray;">{{ list.zone }}</h6>
-                    <h6 style="font-size: small; color: gray;">Address: {{ list.address }}{% for address in list.addressArray %} {{ address }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
-                    <h6 style="font-size: small; color: gray;">Phone Number: {% for ntelephone in list.nTelephones %} {{ ntelephone }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
+                    <h3><b>Array[Array[ list.name ]]</b></h3>
+                    Array[% if list.chain_id %]
+                    <h6 style='font-size: small; color: gray;'>Array[Array[ list.chain_id.name ]]</h6>
+                    Array[% endif %]
+                    <b-form-rating v-model='value'></b-form-rating>
+                    <span class='fa fa-star Array[% if list.rating > 0 %] checked Array[% endif %]'></span>
+                    <span class='fa fa-star Array[% if list.rating > 1 %] checked Array[% endif %]'></span>
+                    <span class='fa fa-star Array[% if list.rating > 2 %] checked Array[% endif %]'></span>
+                    <span class='fa fa-star Array[% if list.rating > 3 %] checked Array[% endif %]'></span>
+                    <span class='fa fa-star Array[% if list.rating > 4 %] checked Array[% endif %]'></span>
+                    <h6><b>Rate:</b> Array[Array[ list.rating ]]</h6>
+                    <h6 style='font-size: small; color: gray;'>Array[Array[ list.zone ]]</h6>
+                    <h6 style='font-size: small; color: gray;'>Address: Array[Array[ list.address ]]Array[% for address in list.addressArray %] Array[Array[ address ]] Array[% if not forloop.last %]/Array[% endif %] Array[% endfor %]</h6>
+                    <h6 style='font-size: small; color: gray;'>Phone Number: Array[% for ntelephone in list.nTelephones %] Array[Array[ ntelephone ]] Array[% if not forloop.last %]/Array[% endif %] Array[% endfor %]</h6>
                     
                 </div>
                 
             </div>
-    {% endfor %}
+    Array[% endfor %]
     
-{% endblock %}
+Array[% endblock %]

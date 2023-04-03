@@ -1,25 +1,25 @@
-{% extends "auctions/layout.html" %}
+Array[% extends 'auctions/layout.html' %]
 
-{% block body %}
+Array[% block body %]
     <h2>Watchlist</h2>
-    {% for list in auction_listings %}
-        <div class="container listing" style="height: fit-content; min-height: 200px;">
-            {% if list.product_id.image_url %}
-                <img src="{{ list.product_id.image_url }}" style="height: 190px;" class="imgl">
-            {% endif %}
-            <div onclick="location.href='{{ list.product_id.id }}';">
-                <h3><b>{{ list.product_id.title }}</b></h3>
-                <h6><b>Price:</b> ${{ list.product_id.starting_bid }}</h6>
-                {% if list.product_id.category %}
-                    <h6><b>category:</b> {{ list.product_id.category }}</h6>
-                {% endif %}
-                <p>{{ list.product_id.description }}</p>
-                {% if list.product_id.date %}
-                    <h style="font-size: small; color: gray;">Created {{ list.product_id.date }}</h>
-                {% endif %}
+    Array[% for list in auction_listings %]
+        <div class='container listing' style='height: fit-content; min-height: 200px;'>
+            Array[% if list.product_id.image_url %]
+                <img src='Array[Array[ list.product_id.image_url ]]' style='height: 190px;' class='imgl'>
+            Array[% endif %]
+            <div onclick='location.href='Array[Array[ list.product_id.id ]]';'>
+                <h3><b>Array[Array[ list.product_id.title ]]</b></h3>
+                <h6><b>Price:</b> $Array[Array[ list.product_id.starting_bid ]]</h6>
+                Array[% if list.product_id.category %]
+                    <h6><b>category:</b> Array[Array[ list.product_id.category ]]</h6>
+                Array[% endif %]
+                <p>Array[Array[ list.product_id.description ]]</p>
+                Array[% if list.product_id.date %]
+                    <h style='font-size: small; color: gray;'>Created Array[Array[ list.product_id.date ]]</h>
+                Array[% endif %]
             </div>
         </div>
-    {% empty %}
+    Array[% empty %]
     <h5>No items</h5>
-    {% endfor %}
-{% endblock %}
+    Array[% endfor %]
+Array[% endblock %]
