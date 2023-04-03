@@ -2,7 +2,7 @@ from django.urls import reverse
 from datetime import datetime
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from .models import hotel, hotel_chain, room, capacity
+from .models import *
 
 
 # Create your views here.
@@ -74,7 +74,7 @@ def getInfo(h_id):
     extrabed =  room.objects.raw('SELECT * FROM app_room where extrabed = True and hotel_id_id = ' + str(h_id))
     return hotel_final,capacities,views_final, extrabed
 
-def reservation(request, h_id):
+def start_reservation(request, h_id):
     hotel_final,capacities,views, extrabed = getInfo(h_id)
     return render(request, "reservation.html", {
         "hotel": hotel_final,
@@ -86,7 +86,7 @@ def reservation(request, h_id):
     })
 
 def choose_room(request, h_id):
-     if request.method == "POST":
+    if request.method == "POST":
         views = request.POST.getlist('views')
         room_capacity = request.POST.getlist('capacities')
         extrabed = request.POST.getlist('extrabed')
@@ -122,10 +122,100 @@ def choose_room(request, h_id):
                 sql_query += ")"
             if len(extrabed) != 0:
                 sql_query += " and extrabed = true"
+            sql_query += " order by price"
+            rooms_no_dup = set()
+            final_rooms = list()
+            for rm in room.objects.raw(sql_query):
+                rmTuple = (rm.capacity_id, rm.extrabed, rm.price, tuple(sorted(rm.view)))
+                if rmTuple not in rooms_no_dup:
+                    rooms_no_dup.add(rmTuple)
+                    final_rooms.append(rm)
 
             return render(request, "reservation.html", {
                 "hotel": hotel.objects.raw('SELECT * FROM app_hotel where hotel_id = ' + str(h_id))[0],
-                "rooms" : room.objects.raw(sql_query),
-                "step":2
+                "rooms" : final_rooms,
+                "step":2,
+                "startdate": request.POST["startdate"],
+                "enddate": request.POST["enddate"],
+                "h_id":h_id
             })
+    else:
+        return HttpResponseRedirect(reverse("index"))
+        
+def complete_reservation(request, h_id):
+    if request.method == "POST":
+        rooms = request.POST.getlist('room')
+        purchased_rooms = list()
+        number_of_rooms = list()
+        for room_id in rooms:
+            rm = room.objects.raw(f"Select * from app_room where id = {room_id}")[0]
+            all_similar_rooms = room.objects.raw(f"Select * from app_room where hotel_id_id = {h_id} and capacity_id = {rm.capacity_id} and extrabed = {rm.extrabed} and price = {rm.price}")
+            i = 0
+            for similar_room in all_similar_rooms:
+                if tuple(sorted(rm.view)) != tuple(sorted(similar_room.view)):
+                    i+=1
+            purchased_rooms.append(all_similar_rooms[0])
+            number_of_rooms.append(len(all_similar_rooms) - i)
+        
+        return render(request, "reservation.html", {
+                    "hotel": hotel.objects.raw('SELECT * FROM app_hotel where hotel_id = ' + str(h_id))[0],
+                    "rooms" : zip(purchased_rooms, number_of_rooms),
+                    "step":3,
+                    "startdate": request.POST["startdate"],
+                    "enddate": request.POST["enddate"],
+                    "h_id": h_id
+                })
+    else:
+        return HttpResponseRedirect(reverse("index"))
+
+def save_client_if_not_existed(ssa, first_name, middle_name , last_name, address):
+    try:
+        client_rs = client(ssa = ssa, first_name=first_name,
+                            middle_name = middle_name, last_name = last_name,
+                            address = address)
+        client_rs.save()
+        return client_rs
+    except:
+        return client.objects.get(ssa=ssa)
+    
+def save_card_if_not_existed(card_number, expiry_date, cvv, name_on_the_card):
+    try:
+        card_rs = card(card_number= card_number, expiry_date=expiry_date, cvv=cvv, name_on_the_card=name_on_the_card)
+        card_rs.save()
+        return card_rs
+    except:
+        return card.objects.get(card_number = card_number)
+    
+def save_reservation(request, h_id):
+    if request.method == "POST":
+        ssa =  request.POST["ssa"]
+        client_rs = save_client_if_not_existed(ssa = ssa, first_name= request.POST["first_name"],
+                        middle_name = request.POST["middle_name"], last_name = request.POST["last_name"],
+                        address = request.POST["address"])
+        card_number = request.POST["card_number"]
+        card_rs = save_card_if_not_existed(card_number=card_number, expiry_date=request.POST["expiry_date"],
+                                 cvv=request.POST["cvv"], name_on_the_card=request.POST["name_on_the_card"])
+        rooms = request.POST.getlist('rooms')
+        startdate = datetime.strptime(request.POST["startdate"], '%m/%d/%Y')
+        enddate = datetime.strptime(request.POST["enddate"], '%m/%d/%Y')
+        for rm_id in rooms:
+            rm = room.objects.raw(f"Select * from app_room where id = {rm_id}")[0]
+            for i in range(int(request.POST[f"num_{rm_id}"])):
+                reserve_room = reservation(date_of_reservation = datetime.now(), start_time = startdate,
+                                           end_time = enddate, client = client_rs, hotel = hotel.objects.get(hotel_id=h_id),
+                                           view = rm.view, capacity = rm.capacity, extrabed = rm.extrabed,
+                                           price =  rm.price)
+                reserve_room.save()
+                payement_room = payement(amount = rm.price, client= client_rs, card_info= card_rs)
+                payement_room.save()
+                payement_for_room = payement_for(reservation= reserve_room, payement=payement_room)
+                payement_for_room.save()
+        
+        return render(request, "reservation.html", {
+                    "hotel": hotel.objects.raw('SELECT * FROM app_hotel where hotel_id = ' + str(h_id))[0],
+                    "h_id": h_id
+                })
+    else:
+        return HttpResponseRedirect(reverse("index"))
+
 

@@ -7,6 +7,10 @@ admin.site.register(hotel)
 admin.site.register(hotel_chain)
 admin.site.register(capacity)
 admin.site.register(room)
-
+admin.site.register(payement)
+admin.site.register(client)
+admin.site.register(payement_for)
+admin.site.register(reservation)
+admin.site.register(card)
 
 
