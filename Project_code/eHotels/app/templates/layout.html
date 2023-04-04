@@ -1,39 +1,39 @@
-Array[% load static %]
+{% load static %}
 
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
     <head>
-      <meta charset='utf-8'>
-      <meta name='viewport' content='width=device-width, initial-scale=1'>
-      <script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
-      <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>
-      <script src='https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js' type='text/javascript'></script>
-      <link href='https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css' rel='stylesheet' type='text/css' />
-        <meta charset='utf-8'>
-        <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
+      <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <!-- Bootstrap CSS -->
-        <title>Array[% block title %]eHotelsArray[% endblock %]</title>
-        <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous'>
-        <!-- <link href='Array[% static 'app/styles.css' %]' rel='stylesheet'> -->
-        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
+        <title>{% block title %}eHotels{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <!-- <link href="{% static 'app/styles.css' %}" rel="stylesheet"> -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <style>
-          .imglArray[
+          .imgl{
               float: left;
               padding: 10px;
               padding-right: 20px;
               margin: auto;
               vertical-align: middle;
-          ]
-          .containerArray[
+          }
+          .container{
               float: left;
               border: 1px solid rgba(223, 222, 222);
               height: fit-content;
               margin: 10px;
-          ]
-          .container:hoverArray[
+          }
+          .container:hover{
               box-shadow: 0px 1px 4px 0 rgba(223,222,222);
-          ]
-          .inp Array[
+          }
+          .inp {
               width: 100%;
               padding: 12px 20px;
               margin: 8px 0;
@@ -41,65 +41,65 @@ Array[% load static %]
               border: 1px solid #ccc;
               border-radius: 4px;
               box-sizing: border-box;
-            ]
-            h1Array[
+            }
+            h1{
               padding: 10px;
-          ] 
-          h2Array[
+          } 
+          h2{
               padding: 10px;
-          ]
-          h6Array[
+          }
+          h6{
               padding-left: 10px;
-          ]
-          h3Array[
+          }
+          h3{
             padding-left: 10px;
-          ]
-          h4Array[
+          }
+          h4{
             padding-left: 10px;
-          ]
+          }
             
-            div .form Array[
+            div .form {
               border-radius: 5px;
               background-color: white;
               padding: 20px;
-            ]
-            .centerArray[
+            }
+            .center{
               display: block;
               margin-left: auto;
               margin-right: auto;
               height: 300px;
-            ]
-            .checked Array[
+            }
+            .checked {
               color: orange;
-          ]
+          }
         </style>
     </head>
     <body>
         
-        <nav class='navbar navbar-expand-sm navbar-dark bg-dark sticky-top'>
-        <a class='navbar-brand' href='Array[% url 'index' %]'>eHotels</a>
-        <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'>
-          <span class='navbar-toggler-icon'></span>
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top">
+        <a class="navbar-brand" href="{% url 'index' %}">eHotels</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
         </button>
       
-        <div class='collapse navbar-collapse' id='navbarSupportedContent'>
-          <ul class='navbar-nav mr-auto'>
-            <li class='nav-item'>
-                <a class='nav-link bd-dark Array[% if active == 0 %] active Array[% endif %]' href='Array[% url 'index' %]'>Hotels</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link bd-dark {% if active == 0 %} active {% endif %}" href="{% url 'index' %}">Hotels</a>
             </li>
-            <li class='nav-item'>
-                <a class='nav-link Array[% if active == 1 %] active Array[% endif %]' href='Array[% url 'hotel_chains' %]'>Hotel Chains</a>
+            <li class="nav-item">
+                <a class="nav-link {% if active == 1 %} active {% endif %}" href="{% url 'hotel_chains' %}">Hotel Chains</a>
             </li>
-            <li class='nav-item'>
-                <a class='nav-link Array[% if active == 2 %] active Array[% endif %]' href='Array[% url 'categories' %]'>Categories</a>
+            <li class="nav-item">
+                <a class="nav-link {% if active == 2 %} active {% endif %}" href="{% url 'categories' %}">Categories</a>
             </li>
-            <li class='nav-item'>
-                <a class='nav-link Array[% if active == 3 %] active Array[% endif %]' href='Array[% url 'zones' %]'>Zones</a>
+            <li class="nav-item">
+                <a class="nav-link {% if active == 3 %} active {% endif %}" href="{% url 'zones' %}">Zones</a>
             </li>
           </ul>
         </div>
       </nav>
-        Array[% block body %]
-        Array[% endblock %]
+        {% block body %}
+        {% endblock %}
     </body>
 </html>
