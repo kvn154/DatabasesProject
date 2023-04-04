@@ -84,14 +84,53 @@ def start_reservation(request, h_id):
         "h_id" : h_id,
         "step" : 1
     })
+def available_rooms(h_id, capacity, views, extrabed, start_date, end_date):
+    sql_query = f"Select * from app_room where id not in (Select room_id from app_damage) and hotel_id_id = {h_id} and capacity_id = {capacity} "
+    sql_query_reservation = f"Select * from app_reservation where hotel_id = {h_id} and capacity_id = {capacity} "
+    if len(views) != 0:
+        sql_query += ' and ('
+        sql_query_reservation += ' and ('
+        first = True
+        for view in views:
+            if not first:
+                sql_query += " or "
+                sql_query_reservation += " or "
+            else:
+                first = False
+            sql_query += f"'{view}' = any(view) "
+            sql_query_reservation += f"'{view}' = any(view) "
+        sql_query += ")"
+        sql_query_reservation += ")"
+    if len(extrabed) != 0:
+        sql_query += " and extrabed = true"
+        sql_query_reservation += " and extrabed = true"
+    sql_query += " order by price"
+    sql_query_reservation += f" and not (end_time < '{start_date}' or start_time > '{end_date}')"
 
+    reserved_rooms = list()
+    for rm in reservation.objects.raw(sql_query_reservation):
+        rmTuple = (rm.capacity_id, rm.extrabed, rm.price, tuple(sorted(rm.view)))   
+        reserved_rooms.append(rmTuple)
+
+    all_rooms = list()
+    
+    for rm in room.objects.raw(sql_query):
+        rmTuple = (rm.capacity_id, rm.extrabed, rm.price, tuple(sorted(rm.view)))  
+        if rmTuple not in reserved_rooms: 
+            all_rooms.append(rmTuple)
+        elif rmTuple in reserved_rooms:
+            reserved_rooms.remove(rmTuple)
+    return all_rooms
+                    
+
+    
 def choose_room(request, h_id):
     if request.method == "POST":
         views = request.POST.getlist('views')
         room_capacity = request.POST.getlist('capacities')
         extrabed = request.POST.getlist('extrabed')
-        startdate = datetime.strptime(request.POST["startdate"], '%m/%d/%Y')
-        enddate = datetime.strptime(request.POST["enddate"], '%m/%d/%Y')
+        startdate = datetime.strptime(request.POST["startdate"], '%m/%d/%Y').date()
+        enddate = datetime.strptime(request.POST["enddate"], '%m/%d/%Y').date()
         errormessage = None
         if startdate > enddate:
             errormessage = "Invalid Date Inputs"
@@ -123,13 +162,15 @@ def choose_room(request, h_id):
             if len(extrabed) != 0:
                 sql_query += " and extrabed = true"
             sql_query += " order by price"
-            rooms_no_dup = set()
+            
             final_rooms = list()
+            room_no_dup = set()
+            availablerooms = available_rooms(h_id, room_capacity[0], views, extrabed, startdate, enddate)
             for rm in room.objects.raw(sql_query):
                 rmTuple = (rm.capacity_id, rm.extrabed, rm.price, tuple(sorted(rm.view)))
-                if rmTuple not in rooms_no_dup:
-                    rooms_no_dup.add(rmTuple)
+                if rmTuple in availablerooms and rmTuple not in room_no_dup:
                     final_rooms.append(rm)
+                    room_no_dup.add(rmTuple)
 
             return render(request, "reservation.html", {
                 "hotel": hotel.objects.raw('SELECT * FROM app_hotel where hotel_id = ' + str(h_id))[0],

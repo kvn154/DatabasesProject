@@ -20,7 +20,7 @@ class hotel_chain(models.Model):
     objects = models.Manager()
 
     def __str__(self):
-        return f'Array[self.chain_id]_Array[self.name] : Array[self.rating]'
+        return f"{self.chain_id}_{self.name} : {self.rating}"
     
 class hotel(models.Model):
     hotel_id = models.IntegerField(primary_key=True)
@@ -35,13 +35,13 @@ class hotel(models.Model):
     numberOfRooms = models.IntegerField(default=0)
     objects = models.Manager()
     def __str__(self):
-        return f'Array[self.hotel_id]_Array[self.name] : Array[self.rating]'
+        return f"{self.hotel_id}_{self.name} : {self.rating}"
     
 class capacity(models.Model):
     id = models.IntegerField(primary_key=True)
     capacity = models.CharField(max_length=50)
     def __str__(self):
-        return f'Array[self.id] : Array[self.capacity]'
+        return f"{self.id} : {self.capacity}"
 
 class room(models.Model):
     class Meta:
@@ -75,7 +75,7 @@ class card(models.Model):
         return f"{self.card_number}"
 
 class payement(models.Model):
-    card_info = models.ForeignKey(card, on_delete=models.CASCADE, default="", blank=True, null=False)
+    card_info = models.ForeignKey(card, on_delete=models.CASCADE, blank=True, null=False)
     amount =  models.DecimalField(max_digits= 20, decimal_places=2)
     client = models.ForeignKey(client, on_delete=models.CASCADE)
     def __str__(self):
@@ -102,6 +102,19 @@ class payement_for(models.Model):
     def __str__(self):
         return f"{self.reservation.client.first_name} {self.reservation.client.last_name} : {self.reservation.capacity.capacity} - ${self.reservation.price}"
 
-
+class commodity(models.Model):
+    id = models.AutoField(primary_key=True)
+    type = models.CharField(max_length=100)
+    description = models.CharField(max_length=250)
+    room = models.ForeignKey(room, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.room} : {self.type}"
+    
+class damage(models.Model):
+    id = models.AutoField(primary_key=True)
+    description = models.CharField(max_length=250)
+    room = models.ForeignKey(room, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.room} : {self.description}"
 
 
