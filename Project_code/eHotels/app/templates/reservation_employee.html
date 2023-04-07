@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <h2><b>Reservations</b></h2>
+    
+    
+        {% for reservation in reservations %}
+        <div onclick="location.href='locate={{ reservation.id }}';" class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
+                {% if reservation.hotel.image_url %}
+                    <img src="{{ reservation.hotel.image_url }}" style="height: 190px;" class="imgl">
+                {% endif %}
+                <div >
+                    <h3><b>{{ reservation }}</b></h3>
+                    <h6 style="font-size: small; color: gray;">{{ reservation.hotel.chain_id.name }}</h6>
+                    <h6 style="font-size: small; color: gray;">Date Of Reservation: {{ reservation.date_of_reservation }}</h6>
+                    <h6><b>From:</b> {{ reservation.start_time }}</h6>
+                    <h6><b>To: </b>{{ reservation.end_time }}</h6>
+
+                    
+                </div>
+                
+            </div>
+        {% endfor %}
+    
+{% endblock %}

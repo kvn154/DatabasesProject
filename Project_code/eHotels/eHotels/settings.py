@@ -77,9 +77,9 @@ WSGI_APPLICATION = 'eHotels.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME' : 'Project_db1',
+        'NAME' : 'Project_db', # change it to your database name
         'USER' : 'postgres',
-        'PASSWORD' : 'jackbali',
+        'PASSWORD' : 'k12345678', # change it to your password
         'HOST' : '127.0.0.1',
         'PORT' : '5432',
     }

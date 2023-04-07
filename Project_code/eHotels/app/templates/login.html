@@ -18,10 +18,13 @@
         {% csrf_token %}
         
         <div class="form-group input_employee ">
-            <input autofocus class="form-control" type="text" name="username" placeholder="Username">
+        <label for="username" class="form-label"><b>Username (SSA)</b></label>
+            <input autofocus class="form-control" type="text" id="username" name="username" placeholder="Username (SSA)">
         </div>
         <div class="form-group input_employee">
-            <input class="form-control" type="password" name="password" placeholder="Password">
+            <label for="password" class="form-label"><b>Password</b></label>
+
+            <input class="form-control" id="password" type="password" name="password" placeholder="Password">
         </div>
     <div class=" d-flex justify-content-center distance">
         

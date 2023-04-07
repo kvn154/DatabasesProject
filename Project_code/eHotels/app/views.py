@@ -15,13 +15,10 @@ def index(request):
         "active": 0
         
     })
+def getEmployee(request):
+    return  employee.objects.raw(f"Select * from app_employee where ssa = '{request.user.username}'")
 
-def index_employee(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("login"))
-    employees = employee.objects.raw(f"Select * from app_employee where ssa = '{request.user.username}'")
-    if len(employees) != 1:
-        return HttpResponseRedirect(reverse("login"))
+def get_hotels_for_employee(request):
     worksfor = works_for.objects.raw(f"Select * from app_works_for where employee_id = '{request.user.username}'")
     if len(worksfor) != 0:
         list_of_hotels = "("
@@ -36,11 +33,20 @@ def index_employee(request):
         hotels_listing = hotel.objects.raw(f'SELECT * FROM app_hotel where hotel_id in {list_of_hotels} ORDER BY rating DESC, name')
     else:
         hotels_listing = None
+    return hotels_listing
+
+def index_employee(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    employees = getEmployee(request)
+    if len(employees) != 1:
+        return HttpResponseRedirect(reverse("login"))
+    
     return render(request, "index.html",{
-        "hotels_listings": hotels_listing,
+        "hotels_listings": get_hotels_for_employee(request=request),
         "active": 0,
         "is_employee" : True,
-        "list_of_hotels" : list_of_hotels
+        "employee" : getEmployee(request)[0]
         
     })
 
@@ -62,6 +68,10 @@ def login_employee(request):
         return render(request, "login.html",{
             "is_employee":True
         })
+
+def logout_employee(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("index_employee"))
     
 def hotel_chains_listing(request):
     hotels_chain_listings = hotel_chain.objects.raw('SELECT * FROM app_hotel_chain ORDER BY rating DESC, name')
@@ -325,4 +335,29 @@ def save_reservation(request, h_id):
     else:
         return HttpResponseRedirect(reverse("index"))
 
+def reservation_listing(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    employees = employee.objects.raw(f"Select * from app_employee where ssa = '{request.user.username}'")
+    if len(employees) != 1:
+        return HttpResponseRedirect(reverse("login"))
+    hotels = get_hotels_for_employee(request=request)
+    
+    list_of_hotels = "("
+    not_first = False
+    for hotel_em in hotels:
+        if not_first:
+            list_of_hotels += ","
+        else:
+            not_first = True
+        list_of_hotels += str(hotel_em.hotel_id)
+    list_of_hotels += ")"
+    reservation_listing = reservation.objects.raw(f'SELECT * FROM app_reservation where hotel_id in {list_of_hotels} Order by start_time')
 
+    return render(request, "reservation_employee.html",{
+        "reservations" : reservation_listing,
+        "is_employee" :True,
+        "active" : 1,
+        "employee" : getEmployee(request)[0]
+        
+    })

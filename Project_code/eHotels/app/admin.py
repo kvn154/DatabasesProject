@@ -14,5 +14,6 @@ admin.site.register(reservation)
 admin.site.register(card)
 admin.site.register(employee)
 admin.site.register(works_for)
+admin.site.register(reservation_archive)
 
 

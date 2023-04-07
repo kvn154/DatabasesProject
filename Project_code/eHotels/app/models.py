@@ -121,6 +121,10 @@ class reservation(models.Model):
               self.view = None
          super(reservation, self).save(*args, **kwargs)
 
+class reservation_archive(reservation):
+    class Meta:
+        managed = False
+
 class payement_for(models.Model):
     id = models.AutoField(primary_key=True)
     reservation = models.ForeignKey(reservation, on_delete=models.CASCADE)
