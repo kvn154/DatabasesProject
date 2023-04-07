@@ -121,9 +121,26 @@ class reservation(models.Model):
               self.view = None
          super(reservation, self).save(*args, **kwargs)
 
-class reservation_archive(reservation):
+class reservation_archive(models.Model):
+    id = models.IntegerField(primary_key=True)
+    date_of_reservation = models.DateField(blank=True)
+    start_time = models.DateField()
+    end_time = models.DateField()
+    client_id = models.CharField(max_length = 100)
+    hotel_id = models.IntegerField()
+    view = ArrayField(models.CharField(max_length=50, blank=True, null=True), null=True, blank=True)
+    capacity_id = models.IntegerField()
+    extrabed = models.BooleanField()
+    price = models.DecimalField(max_digits= 20, decimal_places=2)
+    def __str__(self):
+        return f"{self.client.first_name} {self.client.last_name} : {self.capacity.capacity} - ${self.price}"
+    def save(self, *args, **kwargs):
+         if not self.view:
+              self.view = None
+         super(reservation, self).save(*args, **kwargs)
     class Meta:
         managed = False
+        db_table = 'app_reservation_archive'
 
 class payement_for(models.Model):
     id = models.AutoField(primary_key=True)
@@ -164,8 +181,9 @@ class employee(models.Model):
     def save(self, *args, **kwargs):
         if not self.middle_name:
             self.middle_name = None
-        user = User.objects.get(username = self.ssa)
-        if user is None:
+        user = User.objects.raw(f"Select * from app_user where id  = {self.ssa}")
+        if len(user) == 0:
+            user = User.objects.create_user(username = self.ssa, password =  self.password)
             user.save()
         else:
             old_user = User.objects.get(username = self.ssa)
