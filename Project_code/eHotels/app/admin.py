@@ -12,5 +12,7 @@ admin.site.register(client)
 admin.site.register(payement_for)
 admin.site.register(reservation)
 admin.site.register(card)
+admin.site.register(employee)
+admin.site.register(works_for)
 
 

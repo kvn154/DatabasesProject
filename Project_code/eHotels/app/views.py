@@ -3,19 +3,68 @@ from datetime import datetime
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from .models import *
+from django.contrib.auth import authenticate, login, logout
+
 
 
 # Create your views here.
 def index(request):
-    hotels_listing = hotel.objects.raw('SELECT * FROM app_hotel ORDER BY rating DESC')
+    hotels_listing = hotel.objects.raw('SELECT * FROM app_hotel ORDER BY rating DESC, name')
     return render(request, "index.html",{
         "hotels_listings": hotels_listing,
         "active": 0
         
     })
 
+def index_employee(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    employees = employee.objects.raw(f"Select * from app_employee where ssa = '{request.user.username}'")
+    if len(employees) != 1:
+        return HttpResponseRedirect(reverse("login"))
+    worksfor = works_for.objects.raw(f"Select * from app_works_for where employee_id = '{request.user.username}'")
+    if len(worksfor) != 0:
+        list_of_hotels = "("
+        not_first = False
+        for workfor in worksfor:
+            if not_first:
+                list_of_hotels += ","
+            else:
+                not_first = True
+            list_of_hotels += str(workfor.hotel_id)
+        list_of_hotels += ")"
+        hotels_listing = hotel.objects.raw(f'SELECT * FROM app_hotel where hotel_id in {list_of_hotels} ORDER BY rating DESC, name')
+    else:
+        hotels_listing = None
+    return render(request, "index.html",{
+        "hotels_listings": hotels_listing,
+        "active": 0,
+        "is_employee" : True,
+        "list_of_hotels" : list_of_hotels
+        
+    })
+
+def login_employee(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None and not user.is_superuser: 
+            login(request, user)
+            return HttpResponseRedirect(reverse("index_employee"))
+        else:
+            return render(request, "login.html", {
+                "message": "Invalid username and/or password.",
+                "is_employee" : True
+            })
+    else:
+        return render(request, "login.html",{
+            "is_employee":True
+        })
+    
 def hotel_chains_listing(request):
-    hotels_chain_listings = hotel_chain.objects.raw('SELECT * FROM app_hotel_chain ORDER BY rating DESC')
+    hotels_chain_listings = hotel_chain.objects.raw('SELECT * FROM app_hotel_chain ORDER BY rating DESC, name')
     return render(request, "index.html",{
         "hotels_listings": hotels_chain_listings,
         "isHotelChain" : True,
@@ -65,9 +114,11 @@ def list_category(request, category):
 def getInfo(h_id):
     roomsInHotel = room.objects.raw('SELECT * FROM app_room where hotel_id_id = ' + str(h_id))
     views = set()
+    
     for roomInHotel in roomsInHotel:
-        for view in roomInHotel.view:
-            views.add(view)
+        if roomInHotel.view:
+            for view in roomInHotel.view:
+                views.add(view)
     hotel_final = hotel.objects.raw('SELECT * FROM app_hotel where hotel_id = ' + str(h_id))[0]
     capacities = capacity.objects.raw('Select * FROM app_capacity where id in (Select capacity_id FROM app_room where hotel_id_id =' + str(h_id) + ')')
     views_final = sorted(list(views))
@@ -84,10 +135,13 @@ def start_reservation(request, h_id):
         "h_id" : h_id,
         "step" : 1
     })
-def available_rooms(h_id, capacity, views, extrabed, start_date, end_date):
+def available_rooms(h_id, capacity, views, extrabed, start_date, end_date ,price):
     sql_query = f"Select * from app_room where id not in (Select room_id from app_damage) and hotel_id_id = {h_id} and capacity_id = {capacity} "
     sql_query_reservation = f"Select * from app_reservation where hotel_id = {h_id} and capacity_id = {capacity} "
-    if len(views) != 0:
+    if price:
+        sql_query += f"and price = {price}"
+        sql_query_reservation += f" and price = {price}"
+    if views and len(views) != 0:
         sql_query += ' and ('
         sql_query_reservation += ' and ('
         first = True
@@ -113,14 +167,18 @@ def available_rooms(h_id, capacity, views, extrabed, start_date, end_date):
         reserved_rooms.append(rmTuple)
 
     all_rooms = list()
-    
+    rooms_for_complete = list()
     for rm in room.objects.raw(sql_query):
-        rmTuple = (rm.capacity_id, rm.extrabed, rm.price, tuple(sorted(rm.view)))  
+        if rm.view:
+            rmTuple = (rm.capacity_id, rm.extrabed, rm.price, tuple(sorted(rm.view)))  
+        else:
+            rmTuple = (rm.capacity_id, rm.extrabed, rm.price, None)  
         if rmTuple not in reserved_rooms: 
             all_rooms.append(rmTuple)
+            rooms_for_complete.append(rm)
         elif rmTuple in reserved_rooms:
             reserved_rooms.remove(rmTuple)
-    return all_rooms
+    return all_rooms, rooms_for_complete
                     
 
     
@@ -149,7 +207,7 @@ def choose_room(request, h_id):
             })
         else:
             sql_query = 'Select * from app_room where hotel_id_id = ' + str(h_id) + ' and capacity_id = ' + room_capacity[0]
-            if len(views) != 0:
+            if views and len(views) != 0:
                 sql_query += ' and ('
                 first = True
                 for view in views:
@@ -165,9 +223,12 @@ def choose_room(request, h_id):
             
             final_rooms = list()
             room_no_dup = set()
-            availablerooms = available_rooms(h_id, room_capacity[0], views, extrabed, startdate, enddate)
+            availablerooms, not_important = available_rooms(h_id, room_capacity[0], views, extrabed, startdate, enddate, None)
             for rm in room.objects.raw(sql_query):
-                rmTuple = (rm.capacity_id, rm.extrabed, rm.price, tuple(sorted(rm.view)))
+                if rm.view:
+                    rmTuple = (rm.capacity_id, rm.extrabed, rm.price, tuple(sorted(rm.view)))  
+                else:
+                    rmTuple = (rm.capacity_id, rm.extrabed, rm.price, None)  
                 if rmTuple in availablerooms and rmTuple not in room_no_dup:
                     final_rooms.append(rm)
                     room_no_dup.add(rmTuple)
@@ -188,23 +249,28 @@ def complete_reservation(request, h_id):
         rooms = request.POST.getlist('room')
         purchased_rooms = list()
         number_of_rooms = list()
+        startdate = datetime.strptime(request.POST["startdate"], '%m/%d/%Y').date()
+        enddate = datetime.strptime(request.POST["enddate"], '%m/%d/%Y').date()
         for room_id in rooms:
             rm = room.objects.raw(f"Select * from app_room where id = {room_id}")[0]
-            all_similar_rooms = room.objects.raw(f"Select * from app_room where hotel_id_id = {h_id} and capacity_id = {rm.capacity_id} and extrabed = {rm.extrabed} and price = {rm.price}")
-            i = 0
-            for similar_room in all_similar_rooms:
-                if tuple(sorted(rm.view)) != tuple(sorted(similar_room.view)):
-                    i+=1
+            if rm.extrabed:
+                extrabed = [True]
+            else:
+                extrabed = []
+            not_important, all_similar_rooms = available_rooms(h_id, rm.capacity.id, rm.view, extrabed, startdate, enddate, rm.price)
             purchased_rooms.append(all_similar_rooms[0])
-            number_of_rooms.append(len(all_similar_rooms) - i)
-        
+            number_of_rooms.append(len(all_similar_rooms))
+        startdate = datetime.strptime(request.POST["startdate"], '%m/%d/%Y').date()
+        enddate = datetime.strptime(request.POST["enddate"], '%m/%d/%Y').date()
         return render(request, "reservation.html", {
                     "hotel": hotel.objects.raw('SELECT * FROM app_hotel where hotel_id = ' + str(h_id))[0],
                     "rooms" : zip(purchased_rooms, number_of_rooms),
                     "step":3,
                     "startdate": request.POST["startdate"],
                     "enddate": request.POST["enddate"],
-                    "h_id": h_id
+                    "h_id": h_id,
+                    "number_Of_days": (enddate - startdate).days
+
                 })
     else:
         return HttpResponseRedirect(reverse("index"))

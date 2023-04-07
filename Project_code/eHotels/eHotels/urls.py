@@ -29,8 +29,8 @@ urlpatterns = [
     path("reserve=<int:h_id>", views.start_reservation, name="reservation"),
     path("choose_room=<int:h_id>", views.choose_room, name="choose_room"),
     path("complete_reservation=<int:h_id>", views.complete_reservation, name="complete_reservation"),
-    path("save_reservation=<int:h_id>", views.save_reservation, name="save_reservation")
-
-
+    path("save_reservation=<int:h_id>", views.save_reservation, name="save_reservation"),
+    path("employee", views.index_employee, name="index_employee"),
+    path("login", views.login_employee, name="login"),
 
 ]

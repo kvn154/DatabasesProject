@@ -93,7 +93,7 @@
         <input id="enddate" name="enddate" width="276" placeholder="End Date" required/>
         <script>
             $('#enddate').datepicker({
-                uiLibrary: 'bootstrap4'
+                uiLibrary: 'bootstrap5'
             });
         </script>
       </div>
@@ -117,7 +117,7 @@
   <h3><b>Step 2: Choose Room(s)</b></h3>
   {% if not rooms%}
   <div class="alert alert-danger" role="alert">
-    No Rooms Available With those Specific Criteria
+    No Available Rooms With those Specific Criteria
   </div>
   
   {%else %}
@@ -127,7 +127,9 @@
           <div>
               <h3><b>{{ room.capacity.capacity }}</b></h3>
               <h6><b>Price:</b> ${{ room.price }}</h6>
+              {% if room.view %}
               <h6><b>View:</b>{% for view in room.view %} {{ view.title }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
+              {% endif %}
               {% if room.extrabed %}
               <h6><b>Contains Extra Bed</b></h6>
               {% endif %}
@@ -157,7 +159,9 @@
   <div class="row mb-4 d-flex justify-content-between align-items-center" style="padding-left: 10%;padding-right: 20%;">
     <div class="col-md-3 col-lg-3 col-xl-3">
       <h6 class="text-muted">{{room.capacity.capacity}}</h6>
+      {% if room.view %}
       <h6 class="text-black mb-0" style="padding-bottom: 2px;">View: {% for view in room.view %} {{ view.title }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
+      {% endif %}
       {% if room.extrabed %}
               <h6 class="text-black mb-0" style="padding-bottom: 2px;"><b>Contains Extra Bed</b></h6>
       {% endif %}
@@ -168,7 +172,7 @@
         <i class="fa fa-minus"></i>
       </button>
 
-      <input id="form1" min="0" max="{{max}}" name="num_{{room.id}}" value="1" type="number"
+      <input id="form1" min="1" max="{{max}}" name="num_{{room.id}}" value="1" type="number"
         class="form-control form-control-sm" />
 
       <button class="btn btn-link px-2"
@@ -177,11 +181,11 @@
       </button>
     </div>
     <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-      <h6 class="mb-0">${{room.price}}</h6>
+      <h6 class="mb-0">${{room.price}} per day For {{ number_Of_days }} {% if number_Of_days > 1 %} Days  {%else%} Day {%endif%}</h6>
     </div>
-    <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+    <!-- <div class="col-md-1 col-lg-1 col-xl-1 text-end">
       <a href="#!" class="text-muted"><i class="fa fa-times"></i></a>
-    </div>
+    </div> -->
     <hr style="margin:  3px;">
   </div>
   {% endfor %}
@@ -231,8 +235,8 @@
     </div>
     <div class="row bottomDistance">
       <div class="col">
-        <label for="name_on_the_card" class="form-label"><b>Name On The Card</b></label>
-        <input type="text" class="form-control" id="name_on_the_card" name="name_on_the_card" placeholder="NAME ON THE CARD" aria-label="Name On The Card" required>
+        <label for="name_on_the_card" class="form-label"><b>Name On Card</b></label>
+        <input type="text" class="form-control" id="name_on_the_card" name="name_on_the_card" placeholder="NAME ON CARD" aria-label="Name On Card" required>
       </div>
     </div>
     <div class=" d-flex justify-content-center distance">
