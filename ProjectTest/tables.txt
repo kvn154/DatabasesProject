@@ -180,11 +180,17 @@ spécifique.
 
 
 
-CREATE VIEW CAPACITY AS
+CREATE VIEW CAPACITYnotCOMPLETE AS
 SELECT C.capacity,R.room_number,H.name
 FROM app_hotel H 
 NATURAL JOIN app_room R NATURAL JOIN app_capacity C
 GROUP BY (H.name,C.capacity,R.room_number);
+
+CREATE VIEW CAPACITY AS
+SELECT DISTINCT C.capacity,R.room_number,H.name
+FROM app_hotel H 
+NATURAL JOIN app_room R NATURAL JOIN app_capacity C
+WHERE H.name='TownePlace par Hotelskhouri';
 
 
 /*This second view where available
@@ -221,7 +227,7 @@ every time it is inserted on the original tables */
 
 CREATE FUNCTION insert_New_location() RETURNS trigger AS $$
     BEGIN
-       INSERT INTO location_archive VALUES((NEW).*);
+       INSERT INTO app_location_archive VALUES((NEW).*);
        RETURN NEW;
     END;
 $$ LANGUAGE plpgsql;
@@ -233,7 +239,7 @@ EXECUTE PROCEDURE insert_New_location();
 
 CREATE FUNCTION insert_New_reservation() RETURNS trigger AS $$
     BEGIN
-       INSERT INTO reservation_archive VALUES((NEW).*);
+       INSERT INTO app_reservation_archive VALUES((NEW).*);
        RETURN NEW;
     END;
 $$ LANGUAGE plpgsql;
@@ -244,14 +250,14 @@ FOR EACH ROW
 EXECUTE PROCEDURE insert_New_reservation();
 
 
-/*These two finctions insert 
+/*These two trigger/functions insert 
 information into the archive everytime there is an update
 so that we have in the archive the information available
 for the things before and after the update */
 
 CREATE FUNCTION update_location() RETURNS trigger AS $$
     BEGIN
-       INSERT INTO location_archive VALUES((NEW).*);
+       INSERT INTO app_location_archive VALUES((NEW).*);
        RETURN NEW;
     END;
 $$ LANGUAGE plpgsql;
@@ -264,7 +270,7 @@ EXECUTE PROCEDURE update_location();
 
 CREATE FUNCTION update_reservation() RETURNS trigger AS $$
     BEGIN
-       INSERT INTO reservation_archive VALUES((NEW).*);
+       INSERT INTO app_reservation_archive VALUES((NEW).*);
        RETURN NEW;
     END;
 $$ LANGUAGE plpgsql;
