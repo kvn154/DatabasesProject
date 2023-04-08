@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <h2><b>Reservations</b></h2>
+    <style>
+        .distance{
+            padding: 10px;
+        }
+        .leftDistance{
+            padding-left: 35px;
+        }
+        .addmargin{
+          margin-bottom: 100px;
+        }
+        .bottomDistance{
+          padding-bottom: 10px;
+        }
+    
+    </style>
+        <h1><b>{{ reservation }}</b></h1>
+        {% if reservation.hotel.image_url %}
+            <img src="{{ reservation.hotel.image_url }}" class="center">
+        {% endif %}
+        
+        
+        <div class="d-flex justify-content-center distance">
+            <span class="fa fa-star {% if reservation.hotel.rating > 0 %} checked {% endif %}"></span>
+        <span class="fa fa-star {% if reservation.hotel.rating > 1 %} checked {% endif %}"></span>
+        <span class="fa fa-star {% if reservation.hotel.rating > 2 %} checked {% endif %}"></span>
+        <span class="fa fa-star {% if reservation.hotel.rating > 3 %} checked {% endif %}"></span>
+        <span class="fa fa-star {% if reservation.hotel.rating > 4 %} checked {% endif %}"></span>
+        </div>
+        <h3><b>Hotel</b></h3>
+        <h6 class = "leftDistance" style="font-size: small; color: gray;">  {{ reservation.hotel.chain_id.name }}</h6>
+        <h6 class = "leftDistance" style="font-size: small; color: gray;">  Address: {{ reservation.hotel.address }} {{ reservation.hotel.zone }}</h6>
+        <h6 class = "leftDistance" style="font-size: small; color: gray;">  Phone Number: {% for ntelephone in reservation.hotel.nTelephones %} {{ ntelephone }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
+        <h3><b>Reservation</b></h3>
+        <h6 class = "leftDistance"><b>From:</b> {{ reservation.start_time }}</h6>
+        <h6 class = "leftDistance"><b>To: </b>{{ reservation.end_time }}</h6>
+        <h6 class = "leftDistance" style="font-size: small; color: gray;">Date Of Reservation: {{ reservation.date_of_reservation }}</h6>
+
+        
+        {% csrf_token %}
+        {% if capacities %}
+        <h4><b>Capacity</b></h4>
+            <div class="distance leftDistance" style="padding-left: 45px;">
+           {% for capacity in capacities %}
+            <input type="radio" class="btn-check" name="capacities"  value="{{capacity.id}}" id="capacity_{{capacity}}" autocomplete="off" >
+            <label class="btn btn-outline-dark" for="capacity_{{capacity}}">{{capacity.capacity.title}}</label>
+          {% endfor %}
+        </div>
+        <hr>
+        {% endif %}
+        {% if reservation.view %}
+        <h6 class="leftDistance"><b>View:</b> {% for view in reservation.view %} {{ view }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
+
+        {% endif %}
+        {% if reservation.extrabed %}
+        <h6 class="leftDistance"><b>Needs Extra bed</b></h6>
+        {%endif%}
+        <form action="{% url 'save_location' r_id %}" method="post">
+            {% csrf_token %}
+            <h3><b>Choose Room</b></h3>
+            <select name="chosen_room" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" required>
+                <option selected value="">Available Rooms</option>
+                {% for room in rooms %}
+                <option value="{{room.id}}">Room Number: {{room.room_number}} | View: {% for view in reservation.view %} {{ view.title }} {% if not forloop.last %}/{% endif %} {% endfor %} {%if reservation.extrabed %}| Contains Extra Bed {% endif %}| Price: ${{ reservation.price }}</option>
+                {% endfor %}
+            </select>
+            <div class=" d-flex justify-content-center distance">
+                <input class="btn btn-dark " style="width: 60%;" type="submit" value="Save">
+            </div>
+        </form>
+    
+{% endblock %}

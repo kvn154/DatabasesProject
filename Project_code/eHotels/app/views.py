@@ -352,7 +352,7 @@ def reservation_listing(request):
             not_first = True
         list_of_hotels += str(hotel_em.hotel_id)
     list_of_hotels += ")"
-    reservation_listing = reservation.objects.raw(f'SELECT * FROM app_reservation where hotel_id in {list_of_hotels} Order by start_time')
+    reservation_listing = reservation.objects.raw(f'SELECT * FROM app_reservation where hotel_id in {list_of_hotels} and id not in (SELECT reservation_id from app_location) Order by start_time')
 
     return render(request, "reservation_employee.html",{
         "reservations" : reservation_listing,
@@ -361,3 +361,47 @@ def reservation_listing(request):
         "employee" : getEmployee(request)[0]
         
     })
+
+def available_rooms_for_location(h_id, capacity, views, extrabed, start_date, end_date ,price):
+    sql_query = f"Select * from app_room where id not in (Select room_id from app_damage) and hotel_id_id = {h_id.hotel_id} and capacity_id = {capacity.id} "
+    sql_query_location = f"Select * from app_room where id in (Select room_id from app_location where reservation_id not in (Select id from app_reservation where end_time < '{start_date}' and start_time > '{end_date}'))"
+
+    if price:
+        sql_query += f"and price = {price}"
+    if views and len(views) != 0:
+        sql_query += ' and ('
+        first = True
+        for view in views:
+            if not first:
+                sql_query += " or "
+            else:
+                first = False
+            sql_query += f"'{view}' = any(view) "
+        sql_query += ")"
+    if extrabed:
+        sql_query += " and extrabed = true"
+    sql_query += " order by price"
+    all_rooms = list()
+    for rm in room.objects.raw(sql_query):
+        if rm not in room.objects.raw(sql_query_location):
+           all_rooms.append(rm)
+    return all_rooms
+
+def location_employee(request, r_id):
+    reserv = reservation.objects.raw(f"Select * from app_reservation where id = {r_id}")[0]
+    return render(request, "location.html",{
+        "is_employee" :True,
+        "active" : 1,
+        "employee" : getEmployee(request)[0],
+        'reservation' : reserv,
+        "rooms": available_rooms_for_location(reserv.hotel, reserv.capacity, reserv.view, reserv.extrabed, reserv.start_time,
+                                              reserv.end_time, reserv.price),
+        "r_id" : r_id
+    })
+
+def save_location(request, r_id):
+    if request.method == "POST":
+        locate = location(room = room.objects.get(id = request.POST['chosen_room']), reservation = reservation.objects.get(id = r_id), employee = employee.objects.get(ssa = request.user.username))
+        locate.save()
+        return HttpResponseRedirect(reverse("reservation_listing"))
+    return HttpResponseRedirect(reverse("index_employee"))

@@ -133,7 +133,7 @@ class reservation_archive(models.Model):
     extrabed = models.BooleanField()
     price = models.DecimalField(max_digits= 20, decimal_places=2)
     def __str__(self):
-        return f"{self.client.first_name} {self.client.last_name} : {self.capacity.capacity} - ${self.price}"
+        return f"{self.client_id}: {self.capacity_id} - ${self.price}"
     def save(self, *args, **kwargs):
          if not self.view:
               self.view = None
@@ -201,3 +201,11 @@ class works_for(models.Model):
     def __str__(self):
             return f"{self.employee.first_name}_{self.employee.last_name} works for {self.hotel.name}"
 
+
+class location(models.Model):
+    reservation = models.ForeignKey(reservation, on_delete=models.CASCADE)
+    room = models.ForeignKey(room, on_delete=models.CASCADE)
+    employee = models.ForeignKey(employee, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.reservation} : {self.room} made by {self.employee.first_name}_{self.employee.last_name}"
