@@ -173,13 +173,16 @@ def available_rooms(h_id, capacity, views, extrabed, start_date, end_date ,price
 
     reserved_rooms = list()
     for rm in reservation.objects.raw(sql_query_reservation):
-        rmTuple = (rm.capacity_id, rm.extrabed, rm.price, tuple(sorted(rm.view)))   
+        if rm.view:
+            rmTuple = (rm.capacity_id, rm.extrabed, rm.price, tuple(sorted(rm.view)))  
+        else:
+            rmTuple = (rm.capacity_id, rm.extrabed, rm.price, None)  
         reserved_rooms.append(rmTuple)
 
     all_rooms = list()
     rooms_for_complete = list()
     for rm in room.objects.raw(sql_query):
-        if rm.view:
+        if rm.view is not None and len(rm.view) != 0:
             rmTuple = (rm.capacity_id, rm.extrabed, rm.price, tuple(sorted(rm.view)))  
         else:
             rmTuple = (rm.capacity_id, rm.extrabed, rm.price, None)  

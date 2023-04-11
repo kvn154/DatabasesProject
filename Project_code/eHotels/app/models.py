@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError
-
+from viewflow.fields import CompositeKey
 
 # Create your models here..
 class User(AbstractUser):
@@ -56,6 +56,7 @@ class capacity(models.Model):
 class room(models.Model):
     class Meta:
         unique_together = (('room_number', 'hotel_id'),)
+    id = models.IntegerField(primary_key=True)
     room_number = models.IntegerField()
     hotel_id = models.ForeignKey(hotel, on_delete=models.CASCADE)
     capacity = models.ForeignKey(capacity, on_delete=models.CASCADE)
@@ -64,12 +65,17 @@ class room(models.Model):
     view = ArrayField(models.CharField(max_length=50, blank=True, null=True), null=True, blank=True)
     def __str__(self):
         return f"{self.hotel_id.name}_{self.room_number} : {self.capacity}"
-    def __eq__(self, other):
-        return self.capacity == other.capacity and self.extrabed == other.extrabed and self.price == other.price and set(self.view) == set(other.view)
+    # def __eq__(self, other):
+    #     if self.view:
+    #         return self.capacity == other.capacity and self.extrabed == other.extrabed and self.price == other.price and set(self.view) == set(other.view)
+    #     elif self.view != other.view:
+    #         return False
+        return self.capacity == other.capacity and self.extrabed == other.extrabed and self.price == other.price 
     def save(self, *args, **kwargs):
-         if not self.view:
-              self.view = None
-         super(room, self).save(*args, **kwargs)
+        if not self.view:
+            self.view = None
+        # self.id = int(f"{self.hotel_id}{self.room_number}")
+        super(room, self).save(*args, **kwargs)
 
 class client(models.Model):
     ssa = models.CharField(max_length = 100,primary_key=True)
