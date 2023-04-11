@@ -1,2 +1,0 @@
-# DatabasesProject
-test1
