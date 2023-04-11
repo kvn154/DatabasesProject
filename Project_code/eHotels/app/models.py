@@ -64,13 +64,7 @@ class room(models.Model):
     price = models.DecimalField(max_digits= 20, decimal_places=2)
     view = ArrayField(models.CharField(max_length=50, blank=True, null=True), null=True, blank=True)
     def __str__(self):
-        return f"{self.hotel_id.name}_{self.room_number} : {self.capacity}"
-    # def __eq__(self, other):
-    #     if self.view:
-    #         return self.capacity == other.capacity and self.extrabed == other.extrabed and self.price == other.price and set(self.view) == set(other.view)
-    #     elif self.view != other.view:
-    #         return False
-        return self.capacity == other.capacity and self.extrabed == other.extrabed and self.price == other.price 
+        return f"{self.hotel_id.name} | Capacity: {self.capacity.capacity} | Room number: {self.room_number}"
     def save(self, *args, **kwargs):
         if not self.view:
             self.view = None
@@ -140,8 +134,19 @@ class reservation_archive(models.Model):
     capacity_id = models.IntegerField()
     extrabed = models.BooleanField()
     price = models.DecimalField(max_digits= 20, decimal_places=2)
+    in_person = models.BooleanField()
     def __str__(self):
-        return f"{self.client_id}: {self.capacity_id} - ${self.price}"
+        try:
+            client_obj = client.objects.get(ssa = self.client_id)
+            client_str = f"{client_obj.first_name} {client_obj.last_name}"
+        except:
+            client_str = self.client_id
+        try:
+            capacity_obj = capacity.objects.get(id = self.capacity_id)
+            capacity_str = capacity_obj.capacity
+        except:
+            capacity_str = self.capacity_id
+        return f"{client_str}: {capacity_str} - ${self.price}"
     def save(self, *args, **kwargs):
          if not self.view:
               self.view = None
@@ -217,3 +222,26 @@ class location(models.Model):
 
     def __str__(self):
         return f"{self.reservation} : {self.room} made by {self.employee.first_name}_{self.employee.last_name}"
+
+class location_archive(models.Model):
+    reservation_id = models.IntegerField()
+    room_id = models.IntegerField()
+    employee_id = models.CharField(max_length = 100)
+
+    def __str__(self):
+        try:
+            reservation_str = reservation.objects.get(id = self.reservation_id)
+        except:
+            reservation_str = self.reservation_id
+        try:
+            room_str = room.objects.get(id = self.room_id)
+        except:
+            room_str = self.room_id
+        try:
+            employee_str = employee.objects.get(id = self.employee_id)
+        except:
+            employee_str = self.employee_id
+        return f"{reservation_str} : {room_str} made by {employee_str}"
+    class Meta:
+        managed = False
+        db_table = 'app_location_archive'

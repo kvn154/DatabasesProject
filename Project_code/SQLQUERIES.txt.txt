@@ -314,3 +314,90 @@ INSERT INTO public.app_room(
 
  
 
+CREATE VIEW CAPACITY AS
+SELECT DISTINCT C.capacity,R.room_number,H.name
+FROM app_hotel H 
+NATURAL JOIN app_room R NATURAL JOIN app_capacity C
+WHERE H.name='TownePlace par Hotelskhouri';
+
+
+
+
+
+/*This second view where available
+measn that the room has no damage */
+CREATE VIEW AVAILABILITY AS
+SELECT H.zone, Count(distinct R.id)
+FROM app_Hotel H NATURAL JOIN app_room R
+where R.id not in(SELECT room_id from app_damage) and R.hotel_id_id=H.hotel_id
+GROUP BY H.zone;
+
+CREATE TABLE app_reservation_archive AS 
+TABLE app_reservation;
+
+CREATE TABLE app_location_archive AS 
+TABLE app_location;
+
+
+
+/*These two triggers
+insert information into the archive tables
+every time it is inserted on the original tables */
+
+CREATE FUNCTION insert_New_location() RETURNS trigger AS $$
+    BEGIN
+       INSERT INTO app_location_archive VALUES((NEW).*);
+       RETURN NEW;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER insert_New_location
+BEFORE INSERT ON app_location 
+FOR EACH ROW
+EXECUTE PROCEDURE insert_New_location();
+
+CREATE FUNCTION insert_New_reservation() RETURNS trigger AS $$
+    BEGIN
+       INSERT INTO app_reservation_archive VALUES((NEW).*);
+       RETURN NEW;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER insert_New_reservation
+BEFORE INSERT ON app_reservation 
+FOR EACH ROW
+EXECUTE PROCEDURE insert_New_reservation();
+
+
+/*These two trigger/functions insert 
+information into the archive everytime there is an update
+so that we have in the archive the information available
+for the things before and after the update */
+
+CREATE FUNCTION update_location() RETURNS trigger AS $$
+    BEGIN
+       INSERT INTO app_location_archive VALUES((NEW).*);
+       RETURN NEW;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_location
+BEFORE UPDATE ON app_location 
+FOR EACH ROW
+EXECUTE PROCEDURE update_location();
+
+
+CREATE FUNCTION update_reservation() RETURNS trigger AS $$
+    BEGIN
+       INSERT INTO app_reservation_archive VALUES((NEW).*);
+       RETURN NEW;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_reservation
+BEFORE UPDATE ON app_reservation
+FOR EACH ROW
+EXECUTE PROCEDURE update_reservation();
+
+
+
