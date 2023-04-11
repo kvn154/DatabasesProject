@@ -102,6 +102,7 @@ class payement(models.Model):
     card_info = models.ForeignKey(card, on_delete=models.CASCADE, blank=True, null=True)
     amount =  models.DecimalField(max_digits= 20, decimal_places=2)
     client = models.ForeignKey(client, on_delete=models.CASCADE)
+    cash = models.BooleanField()
     def __str__(self):
         return f"{self.client.first_name} {self.client.last_name} : ${self.amount}"
     def save(self, *args, **kwargs):
@@ -120,6 +121,7 @@ class reservation(models.Model):
     capacity = models.ForeignKey(capacity, on_delete=models.CASCADE)
     extrabed = models.BooleanField()
     price = models.DecimalField(max_digits= 20, decimal_places=2)
+    in_person = models.BooleanField()
     def __str__(self):
         return f"{self.client.first_name} {self.client.last_name} : {self.capacity.capacity} - ${self.price}"
     def save(self, *args, **kwargs):

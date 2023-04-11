@@ -16,5 +16,6 @@ admin.site.register(employee)
 admin.site.register(works_for)
 admin.site.register(reservation_archive)
 admin.site.register(location)
+admin.site.register(damage)
 
 

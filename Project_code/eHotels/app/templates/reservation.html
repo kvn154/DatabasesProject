@@ -38,7 +38,12 @@
     <h6 class = "leftDistance" style="font-size: small; color: gray;">  Phone Number: {% for ntelephone in hotel.nTelephones %} {{ ntelephone }} {% if not forloop.last %}/{% endif %} {% endfor %}</h6>
     
     {% if step == 1%}
+    {% if is_employee %}
+      <form action="{% url 'choose_room_employee' h_id %}" method="post">
+    {% else %}
     <form action="{% url 'choose_room' h_id %}" method="post">
+
+    {% endif %}
     {% csrf_token %}
     {% if capacities %}
     <h4><b>Capacity</b></h4>
@@ -110,7 +115,11 @@
     {% endif %}
   </form>
   {%elif step == 2%}
+  {% if is_employee %}
+  <form action="{% url 'complete_reservation_employee' h_id %}" method="post">
+  {% else %}
   <form action="{% url 'complete_reservation' h_id %}" method="post">
+  {% endif %}
     {% csrf_token %}
     <input id="startdate" name = "startdate" type="hidden" value="{{startdate}}"/>
     <input id="enddate" name="enddate" type="hidden" value="{{enddate}}"/>
@@ -149,7 +158,13 @@
 </form>
   {% endif %}
   {% elif step == 3%}
+  {% if is_employee %}
+  <form action="{% url 'save_reservation_employee' h_id %}" method="post" class="row g-3" style="padding-left: 5%; padding-right: 5%; padding-top: 1%;">
+
+  {% else %}
   <form action="{% url 'save_reservation' h_id %}" method="post" class="row g-3" style="padding-left: 5%; padding-right: 5%; padding-top: 1%;">
+
+  {% endif %}
     {% csrf_token %}
     <input id="startdate" name = "startdate" type="hidden" value="{{startdate}}"/>
     <input id="enddate" name="enddate" type="hidden" value="{{enddate}}"/>
@@ -183,9 +198,6 @@
     <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
       <h6 class="mb-0">${{room.price}} per day For {{ number_Of_days }} {% if number_Of_days > 1 %} Days  {%else%} Day {%endif%}</h6>
     </div>
-    <!-- <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-      <a href="#!" class="text-muted"><i class="fa fa-times"></i></a>
-    </div> -->
     <hr style="margin:  3px;">
   </div>
   {% endfor %}
@@ -218,25 +230,31 @@
     </div>
 
     <h3><b>Payement</b></h3>
+    {% if is_employee %}
+    <div class="btn-group leftDistance" role="group" aria-label="Basic checkbox toggle button group  d-flex justify-content-center" style="max-width: 20%;"></div>
+      <input type="checkbox" class="btn-check" id="cash" name = "cash" value = "True" autocomplete="off">
+      <label class="btn btn-outline-dark " for="cash">Cash</label>
+  </div>
+    {% endif %}
     <div class="row bottomDistance">
       <div class="col">
         <label for="card_number" class="form-label"><b>Card Number</b></label>
-        <input type="text" class="form-control" id="card_number" name="card_number" placeholder="CARD NUMBER" aria-label="Card Number" required>
+        <input type="text" class="form-control" id="card_number" name="card_number" placeholder="CARD NUMBER" aria-label="Card Number" {%if not is_employee %} required {% endif %}>
     </div>
     <div class="row bottomDistance">
       <div class="col">
         <label for="expiry_date" class="form-label"><b>Expiry Date</b></label>
-        <input type="text" class="form-control" id="expiry_date" name="expiry_date" placeholder="MM/YY" aria-label="Expiry Date" pattern="[0-9]{2}/[0-9]{2}" required>
+        <input type="text" class="form-control" id="expiry_date" name="expiry_date" placeholder="MM/YY" aria-label="Expiry Date" pattern="[0-9]{2}/[0-9]{2}" {%if not is_employee %} required {% endif %}>
       </div>
       <div class="col">
         <label for="cvv" class="form-label"><b>CVV</b></label>
-        <input type="text" class="form-control" id="cvv" name="cvv" pattern="[0-9]{3}" placeholder="CVV" aria-label="CVV" required>
+        <input type="text" class="form-control" id="cvv" name="cvv" pattern="[0-9]{3}" placeholder="CVV" aria-label="CVV" {%if not is_employee %} required {% endif %}>
       </div>
     </div>
     <div class="row bottomDistance">
       <div class="col">
         <label for="name_on_the_card" class="form-label"><b>Name On Card</b></label>
-        <input type="text" class="form-control" id="name_on_the_card" name="name_on_the_card" placeholder="NAME ON CARD" aria-label="Name On Card" required>
+        <input type="text" class="form-control" id="name_on_the_card" name="name_on_the_card" placeholder="NAME ON CARD" aria-label="Name On Card" {%if not is_employee %} required {% endif %}>
       </div>
     </div>
     <div class=" d-flex justify-content-center distance">
@@ -248,7 +266,11 @@
     Reservation save!
   </div>
   <div class=" d-flex justify-content-center distance">
+    {% if is_employee %}
+    <button onclick="location.href='reservation_listing'" class="btn btn-dark " style="width: 60%;" type="submit">Go Reservation</button>
+    {% else %}
     <button onclick="location.href=''" class="btn btn-dark " style="width: 60%;" type="submit">Go Back To Home Page</button>
+    {% endif %}
   </div>
   {% endif %}
 {% endblock %}

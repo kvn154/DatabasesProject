@@ -12,7 +12,9 @@
         {% endif %}
     </b></h2>
     {% for list in hotels_listings %}
-            {% if isHotelChain %}
+            {% if is_employee %}
+            <div onclick="location.href='reserve_employee={{ list.hotel_id }}';" class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
+            {% elif isHotelChain %}
             <div onclick="location.href='{{ list.chain_id }}';" class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
             {% else %}
             <div onclick="location.href='reserve={{ list.hotel_id }}';" class="container listing" style="height: fit-content; min-height: 200px; position: relative;">

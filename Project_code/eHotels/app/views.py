@@ -324,9 +324,9 @@ def save_reservation(request, h_id):
                 reserve_room = reservation(date_of_reservation = datetime.now(), start_time = startdate,
                                            end_time = enddate, client = client_rs, hotel = hotel.objects.get(hotel_id=h_id),
                                            view = rm.view, capacity = rm.capacity, extrabed = rm.extrabed,
-                                           price =  rm.price)
+                                           price =  rm.price, in_person = False)
                 reserve_room.save()
-                payement_room = payement(amount = rm.price, client= client_rs, card_info= card_rs)
+                payement_room = payement(amount = rm.price, client= client_rs, card_info= card_rs, cash = False)
                 payement_room.save()
                 payement_for_room = payement_for(reservation= reserve_room, payement=payement_room)
                 payement_for_room.save()
@@ -391,6 +391,11 @@ def available_rooms_for_location(h_id, capacity, views, extrabed, start_date, en
     return all_rooms
 
 def location_employee(request, r_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    employees = employee.objects.raw(f"Select * from app_employee where ssa = '{request.user.username}'")
+    if len(employees) != 1:
+        return HttpResponseRedirect(reverse("login"))
     reserv = reservation.objects.raw(f"Select * from app_reservation where id = {r_id}")[0]
     return render(request, "location.html",{
         "is_employee" :True,
@@ -408,3 +413,170 @@ def save_location(request, r_id):
         locate.save()
         return HttpResponseRedirect(reverse("reservation_listing"))
     return HttpResponseRedirect(reverse("index_employee"))
+
+def start_reservation_employee(request, h_id):
+    hotel_final,capacities,views, extrabed = getInfo(h_id)
+    return render(request, "reservation.html", {
+        "hotel": hotel_final,
+        "capacities": capacities,
+        "views" : views,
+        "extrabed" :extrabed,
+        "h_id" : h_id,
+        "step" : 1,
+        "is_employee" :True,
+        "employee" : getEmployee(request)[0],
+
+    })
+def choose_room_employee(request, h_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    employees = employee.objects.raw(f"Select * from app_employee where ssa = '{request.user.username}'")
+    if len(employees) != 1:
+        return HttpResponseRedirect(reverse("login"))
+    if request.method == "POST":
+        views = request.POST.getlist('views')
+        room_capacity = request.POST.getlist('capacities')
+        extrabed = request.POST.getlist('extrabed')
+        startdate = datetime.strptime(request.POST["startdate"], '%m/%d/%Y').date()
+        enddate = datetime.strptime(request.POST["enddate"], '%m/%d/%Y').date()
+        errormessage = None
+        if startdate > enddate:
+            errormessage = "Invalid Date Inputs"
+        if len(room_capacity) == 0:
+            errormessage = "Please Choose Room capacity"
+        if errormessage != None:
+            hotel_final,capacities,views, extrabed = getInfo(h_id)
+            return render(request, "reservation.html", {
+                "hotel": hotel_final,
+                "capacities": capacities,
+                "views" : views,
+                "extrabed" :extrabed,
+                "errormessage" : errormessage,
+                "h_id" : h_id,
+                "step":1,
+                "is_employee" :True,
+                "employee" : getEmployee(request)[0],
+            })
+        else:
+            sql_query = 'Select * from app_room where hotel_id_id = ' + str(h_id) + ' and capacity_id = ' + room_capacity[0]
+            if views and len(views) != 0:
+                sql_query += ' and ('
+                first = True
+                for view in views:
+                    if not first:
+                        sql_query += " or "
+                    else:
+                        first = False
+                    sql_query += "'" + view + "'" + " = any(view) "
+                sql_query += ")"
+            if len(extrabed) != 0:
+                sql_query += " and extrabed = true"
+            sql_query += " order by price"
+            
+            final_rooms = list()
+            room_no_dup = set()
+            availablerooms, not_important = available_rooms(h_id, room_capacity[0], views, extrabed, startdate, enddate, None)
+            for rm in room.objects.raw(sql_query):
+                if rm.view:
+                    rmTuple = (rm.capacity_id, rm.extrabed, rm.price, tuple(sorted(rm.view)))  
+                else:
+                    rmTuple = (rm.capacity_id, rm.extrabed, rm.price, None)  
+                if rmTuple in availablerooms and rmTuple not in room_no_dup:
+                    final_rooms.append(rm)
+                    room_no_dup.add(rmTuple)
+
+            return render(request, "reservation.html", {
+                "hotel": hotel.objects.raw('SELECT * FROM app_hotel where hotel_id = ' + str(h_id))[0],
+                "rooms" : final_rooms,
+                "step":2,
+                "startdate": request.POST["startdate"],
+                "enddate": request.POST["enddate"],
+                "h_id":h_id,
+                "is_employee" :True,
+                "employee" : getEmployee(request)[0],
+            })
+    else:
+        return HttpResponseRedirect(reverse("index_employee"))
+    
+def complete_reservation_employee(request, h_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    employees = employee.objects.raw(f"Select * from app_employee where ssa = '{request.user.username}'")
+    if len(employees) != 1:
+        return HttpResponseRedirect(reverse("login"))
+    
+    if request.method == "POST":
+        rooms = request.POST.getlist('room')
+        purchased_rooms = list()
+        number_of_rooms = list()
+        startdate = datetime.strptime(request.POST["startdate"], '%m/%d/%Y').date()
+        enddate = datetime.strptime(request.POST["enddate"], '%m/%d/%Y').date()
+        for room_id in rooms:
+            rm = room.objects.raw(f"Select * from app_room where id = {room_id}")[0]
+            if rm.extrabed:
+                extrabed = [True]
+            else:
+                extrabed = []
+            not_important, all_similar_rooms = available_rooms(h_id, rm.capacity.id, rm.view, extrabed, startdate, enddate, rm.price)
+            purchased_rooms.append(all_similar_rooms[0])
+            number_of_rooms.append(len(all_similar_rooms))
+        startdate = datetime.strptime(request.POST["startdate"], '%m/%d/%Y').date()
+        enddate = datetime.strptime(request.POST["enddate"], '%m/%d/%Y').date()
+        return render(request, "reservation.html", {
+                    "hotel": hotel.objects.raw('SELECT * FROM app_hotel where hotel_id = ' + str(h_id))[0],
+                    "rooms" : zip(purchased_rooms, number_of_rooms),
+                    "step":3,
+                    "startdate": request.POST["startdate"],
+                    "enddate": request.POST["enddate"],
+                    "h_id": h_id,
+                    "number_Of_days": (enddate - startdate).days,
+                    "is_employee" :True,
+                    "employee" : getEmployee(request)[0],
+                })
+    else:
+        return HttpResponseRedirect(reverse("index_employee"))
+    
+def save_reservation_employee(request, h_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    employees = employee.objects.raw(f"Select * from app_employee where ssa = '{request.user.username}'")
+    if len(employees) != 1:
+        return HttpResponseRedirect(reverse("login"))
+    
+    if request.method == "POST":
+        ssa =  request.POST["ssa"]
+        client_rs = save_client_if_not_existed(ssa = ssa, first_name= request.POST["first_name"],
+                        middle_name = request.POST["middle_name"], last_name = request.POST["last_name"],
+                        address = request.POST["address"])
+        card_number = request.POST["card_number"]
+        card_rs = save_card_if_not_existed(card_number=card_number, expiry_date=request.POST["expiry_date"],
+                                 cvv=request.POST["cvv"], name_on_the_card=request.POST["name_on_the_card"])
+        rooms = request.POST.getlist('rooms')
+        startdate = datetime.strptime(request.POST["startdate"], '%m/%d/%Y')
+        enddate = datetime.strptime(request.POST["enddate"], '%m/%d/%Y')
+        cash_input = request.POST.getlist('cash')
+        if len(cash_input) == 0:
+            cash_rs = False
+        else:
+            cash_rs = True
+        for rm_id in rooms:
+            rm = room.objects.raw(f"Select * from app_room where id = {rm_id}")[0]
+            for i in range(int(request.POST[f"num_{rm_id}"])):
+                reserve_room = reservation(date_of_reservation = datetime.now(), start_time = startdate,
+                                           end_time = enddate, client = client_rs, hotel = hotel.objects.get(hotel_id=h_id),
+                                           view = rm.view, capacity = rm.capacity, extrabed = rm.extrabed,
+                                           price =  rm.price, in_person = True)
+                reserve_room.save()
+                payement_room = payement(amount = rm.price, client= client_rs, card_info= card_rs, cash = cash_rs)
+                payement_room.save()
+                payement_for_room = payement_for(reservation= reserve_room, payement=payement_room)
+                payement_for_room.save()
+        
+        return render(request, "reservation.html", {
+                    "hotel": hotel.objects.raw('SELECT * FROM app_hotel where hotel_id = ' + str(h_id))[0],
+                    "h_id": h_id, 
+                    "is_employee" :True,
+                    "employee" : getEmployee(request)[0],
+                })
+    else:
+        return HttpResponseRedirect(reverse("index_employee"))
