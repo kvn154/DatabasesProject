@@ -348,15 +348,17 @@ def reservation_listing(request):
     
     list_of_hotels = "("
     not_first = False
-    for hotel_em in hotels:
-        if not_first:
-            list_of_hotels += ","
-        else:
-            not_first = True
-        list_of_hotels += str(hotel_em.hotel_id)
-    list_of_hotels += ")"
-    reservation_listing = reservation.objects.raw(f'SELECT * FROM app_reservation where hotel_id in {list_of_hotels} and id not in (SELECT reservation_id from app_location) Order by start_time')
-
+    if hotels:
+        for hotel_em in hotels:
+            if not_first:
+                list_of_hotels += ","
+            else:
+                not_first = True
+            list_of_hotels += str(hotel_em.hotel_id)
+        list_of_hotels += ")"
+        reservation_listing = reservation.objects.raw(f'SELECT * FROM app_reservation where hotel_id in {list_of_hotels} and id not in (SELECT reservation_id from app_location) Order by start_time')
+    else:
+        reservation_listing = None
     return render(request, "reservation_employee.html",{
         "reservations" : reservation_listing,
         "is_employee" :True,

@@ -3,7 +3,7 @@
 {% block body %}
     <h2><b>Reservations</b></h2>
     
-    
+        
         {% for reservation in reservations %}
         <div onclick="location.href='location={{ reservation.id }}';" class="container listing" style="height: fit-content; min-height: 200px; position: relative;">
                 {% if reservation.hotel.image_url %}
