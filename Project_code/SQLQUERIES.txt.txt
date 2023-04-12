@@ -1,3 +1,88 @@
+CREATE OR REPLACE FUNCTION update_hotel_room_count()
+RETURNS TRIGGER AS $$
+DECLARE
+  h_id INTEGER;
+  room_count INTEGER;
+BEGIN
+    h_id := new.hotel_ID_iD;
+  SELECT COUNT(*) INTO room_count FROM public.app_room WHERE hotel_ID_id = h_id;
+  UPDATE public.app_hotel  SET "numberOfRooms" = room_count WHERE hotel_ID = h_id;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER update_hotel_room_count_trigger
+AFTER INSERT OR UPDATE ON public.app_room
+FOR EACH ROW
+EXECUTE FUNCTION update_hotel_room_count();
+
+
+
+CREATE OR REPLACE FUNCTION update_hotel_room_count_after_delete()
+RETURNS TRIGGER AS $$
+DECLARE
+  h_id INTEGER;
+  room_count INTEGER;
+BEGIN
+    h_id := old.hotel_ID_iD;
+  SELECT COUNT(*) INTO room_count FROM public.app_room WHERE hotel_ID_id = h_id;
+  UPDATE public.app_hotel  SET "numberOfRooms" = room_count WHERE hotel_ID = h_id;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER update_hotel_room_count_trigger_after_delete
+AFTER DELETE ON public.app_room
+FOR EACH ROW
+EXECUTE FUNCTION update_hotel_room_count_after_delete();
+
+
+
+CREATE OR REPLACE FUNCTION update_hotel_chain_count()
+RETURNS TRIGGER AS $$
+DECLARE
+  ch_id INTEGER;
+  hotel_count INTEGER;
+BEGIN
+  ch_id := NEW.chain_ID_id;
+  SELECT COUNT(*) INTO hotel_count FROM public.app_hotel WHERE chain_ID_id = ch_id;
+  UPDATE public.app_hotel_chain SET "numberOfHotels" = hotel_count WHERE chain_ID = ch_id;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER update_hotel_chain_count_trigger
+AFTER INSERT OR UPDATE ON public.app_hotel
+FOR EACH ROW
+EXECUTE FUNCTION update_hotel_chain_count();
+
+
+
+
+
+
+
+CREATE OR REPLACE FUNCTION update_hotel_chain_count_after_delete()
+RETURNS TRIGGER AS $$
+DECLARE
+  ch_id INTEGER;
+  hotel_count INTEGER;
+BEGIN
+  ch_id := old.chain_ID_id;
+  SELECT COUNT(*) INTO hotel_count FROM public.app_hotel WHERE chain_ID_id = ch_id;
+  UPDATE public.app_hotel_chain SET "numberOfHotels" = hotel_count WHERE chain_ID = ch_id;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER update_hotel_chain_count_trigger_after_delete
+AFTER delete ON public.app_hotel
+FOR EACH ROW
+EXECUTE FUNCTION update_hotel_chain_count_after_delete();
 
 INSERT INTO public.app_hotel_chain(
 	chain_id, "addressArray", name, email, "nTelephones", rating, image_url, "numberOfHotels")
@@ -337,6 +422,7 @@ TABLE app_reservation;
 
 CREATE TABLE app_location_archive AS 
 TABLE app_location;
+
 
 
 
