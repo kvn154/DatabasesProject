@@ -399,11 +399,11 @@ INSERT INTO public.app_room(
 
  
 
-CREATE VIEW CAPACITY AS
-SELECT DISTINCT C.capacity,R.room_number,H.name
-FROM app_hotel H 
-NATURAL JOIN app_room R NATURAL JOIN app_capacity C
-WHERE H.name='TownePlace par Hotelskhouri';
+CREATE OR REPLACE VIEW CAPACITY AS
+SELECT C.capacity,R.room_number,H.name
+FROM app_hotel H, app_room R, app_capacity C
+
+WHERE H.name='TownePlace par Hotelskhouri' and R.capacity_id=C.id and H.hotel_id = R.hotel_id_id;
 
 
 
